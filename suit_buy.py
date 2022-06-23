@@ -197,6 +197,7 @@ class SuitBuy(BuyRequests):
             bili_time = self._GetBiliNowTime()
             if bili_time >= self.sale_time:
                 self._SuitBuy(test)
+                return 0
             time.sleep(0.02)  # 改这增加时间精确度
             e = time.time()
             print(bili_time, e - s)
