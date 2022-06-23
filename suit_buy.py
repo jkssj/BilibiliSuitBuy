@@ -22,24 +22,28 @@ import uuid
 
 测试过1次, 26134失败, 不想送钱啦, 摆烂了, 一起烂吧
 
+抓包只要进随便一个装扮的页面 cookie acesskey appkey Buvid ... 就啥都有了
+
+再优化也是python写的，本身就慢，没有办法
+
 """
 
 
 class BuyConfig:
-    cookie_text = ""  # fiddler抓包
-    app_sec = "560c52ccd288fed045859ed18bffd973"
-    access_key = ""  # fiddler抓包
-    buv_id = ""  # fiddler抓包
-    app_key = ""  # fiddler抓包
-    item_id = ""  # fiddler抓包
-    phone = ""  # fiddler抓包
-    system = ""  # fiddler抓包
-    channel = ""  # fiddler抓包
-    sdk_int = ""  # fiddler抓包
-    add_month = "-1"  # 字面意思
-    buy_num = "1"  # 字面意思
-    coupon_token = ""  # 字面意思
-    jump_time: int = 3  # 字面意思
+    cookie_text = ""  # fiddler抓包  访问头里的cookie 要把'Cookie:'也复制进来
+    app_sec = "560c52ccd288fed045859ed18bffd973"  # 不变
+    access_key = ""  # fiddler抓包  url里accesskey值
+    buv_id = ""  # fiddler抓包 设备id cookie里的Buvid
+    app_key = ""  # fiddler抓包  url里的appkey
+    item_id = ""  # fiddler抓包  装备id url里的item_id
+    phone = ""  # fiddler抓包  手机型号 位置在访问头
+    system = ""  # fiddler抓包 安卓系统版本 位置在访问头
+    channel = ""  # fiddler抓包 b站客户端下载安装渠道 位置在访问头直接搜索'channel'
+    sdk_int = ""  # fiddler抓包  安卓的sdk版本 访问头里直接搜索'SdkInt'
+    add_month = "-1"  # 字面意思  购买多少个月 -1为永久
+    buy_num = "1"  # 字面意思  购买数量
+    coupon_token = ""  # 字面意思  优惠卷token
+    jump_time: int = 3  # 字面意思  剩余多长时间跳出本地时间循环转入b站服务器时间
 
 
 class ToolsRequests:
