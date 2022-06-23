@@ -116,7 +116,7 @@ class BuyRequests(BuyConfig, ToolsRequests):
 
     def _CookieConvertDict(self):
         """ 没让你们一个一个复制cookie的key和value, 很人性化吧 😁 """
-        """ 格式直接从fiddler复制 """
+        """ 格式直接从fiddler复制 要带前面'Cookie:'如果不带就把下面代码的'[7:]'删掉 """
         cookie_str = self.cookie_text.replace(" ", "")[7:]
         cookie_list = [tuple(li.split("=")) for li in cookie_str.split(";")]
         return {key: value for key, value in cookie_list}
