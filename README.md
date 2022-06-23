@@ -17,52 +17,18 @@ B站抢装扮脚本(一起烂吧)
 抓包教程看这个 链接：[视频教程](https://pan.baidu.com/s/1epzhwbTpBNwNUMT0E-u_TQ?pwd=uvij)
 提取码：uvij
 
+补充: fiddler抓包要多一步
+
+Tools -> Options -> HTTPS -> Actions -> Trust Root Certificate
+
 ------------------------------------------------
 
-Fiddler抓包教程 (http/https)
+问: 抓包填的数据在哪找?
 
-安卓7抓包(http/https)
+答: 锁定url为https://api.bilibili.com/x/garb/v2/mall/suit/detail的包, 里面包含了所有需要的内容
 
-前置:[Fiddler Classic](https://www.telerik.com/download/fiddler) 和 一部root的安卓手机或安卓模拟器(安卓7以下可以不看)
+------------------------------------------------
 
-1.设置Connections( Tools - Options - Connections )
+问: 抓完怎么运行?
 
-![fiddler-connections](/img/fiddler-connections.png)
-
-2.安装CA证书( Tools - Options - HTTPS )
-
-![fiddler-https](/img/fiddler-HTTPS.png)
-
-导出证书到桌面 Tools - Options - HTTPS - Actions - Export Root Certificate to Desktop
-
-![fiddler-cer](/img/cer.png) 随便找个方法把证书发送到手机 - 这里我用夜神模拟器来模拟
-
-![phone-root](/img/phone-root.png)
-
-我的模拟器系统是安卓9-64bit(必须开启root)
-
-![cer-path](/img/cer-path.png)
-
-从 设置 - 安全性和位置信息 - 加密与凭据 - 从SD卡安装
-
-找到发送到手机上的证书直接安装
-
-打开文件管理器找到/data/misc/user/0/cacerts-added/xxxxx.0
-
-这个就是刚刚安装在用户证书里的fiddler证书
-
-把.0文件复制到/etc/security/cacerts 下(用户证书移系统证书)
-
-3.抓包
-
-打开Win+R输入cmd
-
-cmd输入ipconfig
-
-找到你的内网ip
-
-打开手机wifi设置
-
-![cer-path](/img/wifi-http.png)
-
-保存后打开fiddler就可以抓手机端的https包了
+答：安装[python](https://www.python.org/), 然后安装requests```pip install requests```, 填上刚刚抓包的内容, 把start的True改为Fasle就可以运行
