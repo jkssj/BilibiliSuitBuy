@@ -214,4 +214,5 @@ if __name__ == '__main__':
     Buy = SuitBuy()
     ee = time.time()
     print("准备耗时:", ee - ss)
+    """ Buy.start(False) 时间会购买 默认测试 """
     Buy.start(True)
