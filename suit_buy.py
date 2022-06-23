@@ -186,22 +186,22 @@ class SuitBuy(BuyRequests):
             now_time = time.time()
             print(f"\r{jump_time_ - now_time}", end="")
 
-    def WaitSeverTime(self):
+    def WaitSeverTimeAndStart(self， test):
         """ 你看看函数名 👀 """
         while True:
             s = time.time()
             bili_time = self._GetBiliNowTime()
             if bili_time >= self.sale_time:
-                return True
-            time.sleep(0.05)
+                self._SuitBuy(test)
+            time.sleep(0.02)  # 改这增加时间精确度
             e = time.time()
             print(bili_time, e - s)
 
     def start(self, test=True):
         """ test=False == run """
         self.WaitLocalTime()
-        self.WaitSeverTime()
-        self._SuitBuy(test)
+        self.WaitSeverTimeAndStart(test)
+        # self._SuitBuy(test)
         input(">>>>>>>>>")
 
 
