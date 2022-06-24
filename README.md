@@ -25,7 +25,7 @@ Tools -> Options -> HTTPS -> Actions -> Trust Root Certificate
 
 问: 抓包填的数据在哪找?
 
-答: 锁定url为https://api.bilibili.com/x/garb/v2/mall/suit/detail(随便点一个装扮的商店页脚有), 里面包含了所有需要的内容
+答: 锁定url为https://api.bilibili.com/x/garb/v2/mall/suit/detail(随便点一个装扮的商店页就有), 里面包含了所有需要的内容
 
 ------------------------------------------------
 
