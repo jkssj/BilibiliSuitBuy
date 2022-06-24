@@ -27,6 +27,10 @@ Tools -> Options -> HTTPS -> Actions -> Trust Root Certificate
 
 答: 锁定url为https://api.bilibili.com/x/garb/v2/mall/suit/detail(随便点一个装扮的商店页就有), 里面包含了所有需要的内容
 
+accesskey,appkey,item_id在url里可以找到
+
+其他东西都在访问头
+
 ------------------------------------------------
 
 问: 抓完怎么运行?
