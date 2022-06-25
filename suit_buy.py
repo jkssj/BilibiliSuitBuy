@@ -190,7 +190,7 @@ class SuitBuy(BuyRequests):
             now_time = time.time()
             print(f"\r{jump_time_ - now_time}", end="")
 
-    def WaitSeverTimeAndStart(self， test):
+    def WaitSeverTimeAndStart(self, test):
         """ 你看看函数名 👀 """
         while True:
             s = time.time()
