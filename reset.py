@@ -2,6 +2,7 @@
 
 # https://github.com/lllk140
 
+
 from requests.utils import cookiejar_from_dict
 from urllib.parse import urlencode
 from typing import Union
@@ -14,6 +15,11 @@ DefaultAccept = "application/json, text/plain, */*"
 DefaultAcceptEncoding = "gzip"
 DefaultProxies = {"http": None, "https": None}
 DefaultTrustEnv = False
+DefaultHost = "api.biliapi.net"
+DefaultConnection = "keep-alive"
+DefaultHeaderAPPKEY = "android"
+DefaultEnv = "prod"
+DefaultApiFrom = "h5"
 
 
 class Generate(object):
@@ -57,82 +63,90 @@ class Generate(object):
         return " ".join(user_agent_list)
 
 
-class Request(requests.Session, Generate):
+class SuitBuySession(requests.Session, Generate):
+    suit_buy_url = "https://api.bilibili.com/x/garb/v2/trade/create"
+    app_sec = "560c52ccd288fed045859ed18bffd973"  # 计算sign用的
+
     def __init__(self, **kwargs):
-        super(Request, self).__init__()
+        super(SuitBuySession, self).__init__()
 
         # 代理设置
         self.trust_env = kwargs.get("trust_env", DefaultTrustEnv)
         self.proxies = kwargs.get("proxies", DefaultProxies)
 
         # 表单设置
-        self.shop_from = kwargs.get("shop_from", "feed.card")
-        self.coupon_token = kwargs.get("coupon_token", "")
+        __shop_from = kwargs.get("shop_from", "feed.card")
+        __coupon_token = kwargs.get("coupon_token", "")
         __f_source: str = kwargs.get("f_source", "shop")
-        self.add_month = kwargs.get("add_month", "-1")
-        self.item_id: str = kwargs.get("item_id")
-        self.buy_num = kwargs.get("buy_num", "1")
-        self.sale_time: int = int(kwargs.get("sale_time"))
-        self.app_key: str = kwargs.get("app_key")
+        __sale_time: int = int(kwargs.get("sale_time"))
+        __add_month = kwargs.get("add_month", "-1")
+        __item_id: str = kwargs.get("item_id")
+        __buy_num = kwargs.get("buy_num", "1")
+        __app_key: str = kwargs.get("app_key")
 
         # 访问头设置
-        __referer = f"https://www.bilibili.com/h5/mall/suit/detail?id={self.item_id}"
-        __referer = __referer + f"&navhide=1&f_source=shop&from={self.shop_from}"
+        __referer = f"https://www.bilibili.com/h5/mall/suit/detail?id={__item_id}"
+        __referer = __referer + f"&navhide=1&f_source=shop&from={__shop_from}"
+        __HeaderAPPKEY = kwargs.get("header_app_key", DefaultHeaderAPPKEY)
         __Encoding = kwargs.get("accept_encoding", DefaultAcceptEncoding)
         __content_type = kwargs.get("content_type", DefaultContentType)
+        __Connection = kwargs.get("connection", DefaultConnection)
+        __ApiFrom = kwargs.get("api_from", DefaultApiFrom)
+        __TraceId = self._BiliTraceId(int(__sale_time))
         __Accept = kwargs.get("accept", DefaultAccept)
-        __TraceId = self._BiliTraceId(self.sale_time)
         __UserAgent = self._BiliUserAgent(**kwargs)
+        __host = kwargs.get("host", DefaultHost)
+        __Env = kwargs.get("env", DefaultEnv)
 
         # 用户验证
-        self.access_key: str = kwargs.get("access_key")
-        self.bili_eid: str = kwargs.get("bili_eid")
-        self.cookie: dict = kwargs.get("cookie")
-        self.__bili_jct = self.cookie["bili_jct"]
+        __access_key: str = kwargs.get("access_key")
+        __bili_eid: str = kwargs.get("bili_eid")
+        __suit_cookie: dict = kwargs.get("cookie")
+        __bili_jct = __suit_cookie["bili_jct"]
 
         # 杂项
-        self.version: str = kwargs.get("version")
+        __version: str = kwargs.get("version")
+        __DedeUserID = __suit_cookie['DedeUserID']
         __statistics = '{"appId":1,"platform":3,"version":"__version__","abtest":""}'
-        __statistics = __statistics.replace("__version__", self.version)
-
-        self.from_data = self._BiliAddFormDataSign(urlencode({
-            "access_key": self.access_key,
-            "add_month": str(self.add_month),
-            "appkey": str(self.app_key),
-            "buy_num": str(self.buy_num),
-            "coupon_token": str(self.coupon_token),
-            "csrf": str(self.__bili_jct),
+        __statistics = __statistics.replace("__version__", __version)
+        __from_data_buy = urlencode({
+            "access_key": __access_key,
+            "add_month": str(__add_month),
+            "appkey": str(__app_key),
+            "buy_num": str(__buy_num),
+            "coupon_token": str(__coupon_token),
+            "csrf": str(__bili_jct),
             "currency": "bp",
             "disable_rcmd": "0",
             "f_source": str(__f_source),
-            "from": str(self.shop_from),
+            "from": str(__shop_from),
             "from_id": "",
-            "item_id": str(self.item_id),
+            "item_id": str(__item_id),
             "platform": "android",
             "statistics": __statistics,
-            "ts": str(self.sale_time)
-        }))
+            "ts": str(__sale_time)
+        })
 
-        self.cookies = cookiejar_from_dict(self.cookie)
-
-        self.headers.update({"Accept": __Accept})
-        self.headers.update({"Accept-Encoding": __Encoding})
-        self.headers.update({"User-Agent": __UserAgent})
-        self.headers.update({"Content-Length": str(len(self.from_data))})
-        self.headers.update({"Content-Type": __content_type})
-        self.headers.update({"APP-KEY": "android"})
-        self.headers.update({"env": "prod"})
-        self.headers.update({"native_api_from": "h5"})
-        self.headers.update({"Referer": __referer})
-        self.headers.update({"x-bili-aurora-eid": self.bili_eid})
+        self.from_data_buy = self._BiliAddFormDataSign(__from_data_buy)
+        self.cookies = cookiejar_from_dict(__suit_cookie)
+        self.headers.update({"Accept": str(__Accept)})
+        self.headers.update({"Accept-Encoding": str(__Encoding)})
+        self.headers.update({"User-Agent": str(__UserAgent)})
+        self.headers.update({"Content-Length": str(len(self.from_data_buy))})
+        self.headers.update({"Content-Type": str(__content_type)})
+        self.headers.update({"APP-KEY": str(__HeaderAPPKEY)})
+        self.headers.update({"env": str(__Env)})
+        self.headers.update({"native_api_from": str(__ApiFrom)})
+        self.headers.update({"Referer": str(__referer)})
+        self.headers.update({"x-bili-aurora-eid": str(__bili_eid)})
         self.headers.update({"x-bili-aurora-zone": ""})
-        self.headers.update({"x-bili-mid": f"{self.cookie['DedeUserID']}"})
-        self.headers.update({"x-bili-trace-id": __TraceId})
-        self.headers.update({"Connection": "keep-alive"})
-        self.headers.update({"Host": "api.biliapi.net"})
+        self.headers.update({"x-bili-mid": str(__DedeUserID)})
+        self.headers.update({"x-bili-trace-id": str(__TraceId)})
+        self.headers.update({"Connection": str(__Connection)})
+        self.headers.update({"Host": str(__host)})
 
 
-class SuitBuy(Request):
+class SuitBuy(SuitBuySession):
     def __init__(self, **kwargs):
         super(SuitBuy, self).__init__(**kwargs)
 
@@ -141,18 +155,18 @@ class SuitBuy(Request):
         print(self.cookies)
         print(self.trust_env)
         print(self.proxies)
-        print(self.from_data)
+        print(self.from_data_buy)
 
-    def buy(self):
-        url = "https://api.bilibili.com/x/garb/v2/trade/create"
-        response = self.post(url, data=self.from_data)
-        return response.text
+    def run(self):
+        suit_buy_url = "https://api.bilibili.com/x/garb/v2/trade/create"
+        response = self.post(suit_buy_url, data=self.from_data_buy)
+        return response
 
 
 if __name__ == '__main__':
     from test_value import cookie_test, access_key_test, bili_eid_test
+    import time
     suit = SuitBuy(
-        # 代理
         trust_env=False,
         proxies={"http": None, "https": None},
 
@@ -161,22 +175,27 @@ if __name__ == '__main__':
         coupon_token="",
         f_source="shop",
         add_month="-1",
-        item_id="37644",
+        item_id="37825",
         buy_num="1",
-        sale_time="1661322078",
+        sale_time=round(time.time()),
         app_key="1d8b6e7d45233436",
 
         # 访问头设置(外)
-        accept="application/json, text/plain, */*",
-        accept_encoding="gzip",
-        content_type="application/json, text/plain, */*",
+        header_app_key=DefaultHeaderAPPKEY,
+        accept_encoding=DefaultAcceptEncoding,
+        content_type=DefaultContentType,
+        connection=DefaultConnection,
+        api_from=DefaultApiFrom,
+        accept=DefaultAccept,
+        host=DefaultHost,
+        env=DefaultEnv,
 
         # 访问头设置(UserAgent)
         system_version="9",
         channel="yingyongbao",
         sdk_int="28",
         version="6.87.0",
-        session="1604bd63",
+        session="1a7fb931",
         buv_id="XY30A9D303849C51D0D6F863F84A269E887E8",
         phone="M2007J22C",
         build="6870300",
@@ -187,4 +206,4 @@ if __name__ == '__main__':
         cookie=cookie_test
     )
     suit.PrintValue()
-    # suit.buy()
+    print(suit.run())
