@@ -64,9 +64,6 @@ class Generate(object):
 
 
 class SuitBuySession(requests.Session, Generate):
-    suit_buy_url = "https://api.bilibili.com/x/garb/v2/trade/create"
-    app_sec = "560c52ccd288fed045859ed18bffd973"  # 计算sign用的
-
     def __init__(self, **kwargs):
         super(SuitBuySession, self).__init__()
 
