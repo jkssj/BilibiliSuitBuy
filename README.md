@@ -1,6 +1,8 @@
 # BilibiliSuitBuy [b站装扮购买]
 
-**B站装扮购买全模拟(99%)**
+**B站装扮购买全模拟(95%)**
+
+~~host有问题~~
 
 哎，虽然我又重新上传了，但只是留个档，以后要看不至于找不到♿
 
@@ -19,8 +21,8 @@
 ```
 if __name__ == '__main__':
     from test_value import cookie_test, access_key_test, bili_eid_test
+    import time
     suit = SuitBuy(
-        # 代理
         trust_env=False,
         proxies={"http": None, "https": None},
 
@@ -29,22 +31,27 @@ if __name__ == '__main__':
         coupon_token="",
         f_source="shop",
         add_month="-1",
-        item_id="37644",
+        item_id="37825",
         buy_num="1",
-        sale_time="1661322078",
+        sale_time=round(time.time()),
         app_key="1d8b6e7d45233436",
 
         # 访问头设置(外)
-        accept="application/json, text/plain, */*",
-        accept_encoding="gzip",
-        content_type="application/json, text/plain, */*",
+        header_app_key=DefaultHeaderAPPKEY,
+        accept_encoding=DefaultAcceptEncoding,
+        content_type=DefaultContentType,
+        connection=DefaultConnection,
+        api_from=DefaultApiFrom,
+        accept=DefaultAccept,
+        host=DefaultHost,
+        env=DefaultEnv,
 
         # 访问头设置(UserAgent)
         system_version="9",
         channel="yingyongbao",
         sdk_int="28",
         version="6.87.0",
-        session="1604bd63",
+        session="1a7fb931",
         buv_id="XY30A9D303849C51D0D6F863F84A269E887E8",
         phone="M2007J22C",
         build="6870300",
@@ -54,8 +61,8 @@ if __name__ == '__main__':
         bili_eid=bili_eid_test,
         cookie=cookie_test
     )
-    # suit.PrintValue()
-    # suit.buy()
+    suit.PrintValue()
+    # print(suit.run())
 ```
 
 不急一个一个看
