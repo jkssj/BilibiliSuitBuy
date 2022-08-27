@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
 上述内容需通过抓包获得
 
-**注：**```access_key bili_eid```是有时效的
+**注：**```access_key bili_eid session```是有时效的
 
 [抓包教程(旧)](https://pan.baidu.com/s/1epzhwbTpBNwNUMT0E-u_TQ?pwd=uvij)
 
