@@ -1,6 +1,7 @@
 # -*- coding:utf-8 -*-
 
 from flask import Flask, jsonify, request
+from flask_compress import Compress
 import requests
 import json
 import time
@@ -8,6 +9,8 @@ import time
 header = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:103.0) Gecko/20100101 Firefox/103.0"}
 
 app = Flask(__name__)
+compress = Compress()
+compress.init_app(app)
 session = requests.Session()
 session.headers = header
 session.proxies = {"http": None, "https": None}
@@ -81,6 +84,7 @@ def garb_user_wallet():
 
 
 @app.route("/x/garb/user/suit/asset", methods=["GET"])
+@compress.compressed()
 def garb_user_suit_asset():
     item_id = request.args.get("item_id")
     url = "https://api.bilibili.com/x/garb/v2/mall/suit/detail"
@@ -103,7 +107,7 @@ def garb_user_suit_asset():
     item_dict.update({"sale_time_end": 0})
     item_dict.update({"sale_surplus": 0})
 
-    fan_dict = {"is_fan": True, "token": suit_name, "number": 1, "color": fan_no_color}
+    fan_dict = {"is_fan": True, "token": suit_name, "number": 0, "color": fan_no_color}
     suit_date = time.strftime("%Y/%m/%d", time.localtime(time.time()))
     fan_dict.update({"name": suit_name, "luck_item_id": 0, "date": suit_date})
 
@@ -126,6 +130,11 @@ def garb_user_suit_asset():
     data_dict.update({"assets": assets_list})
     return_json.update({"data": data_dict})
     return jsonify(return_json)
+
+
+@app.route("/log/web", methods=["POST"])
+def garb_user_equip_load():
+    return "ok"
 
 
 app.run("0.0.0.0", 80, use_reloader=True)
