@@ -19,80 +19,75 @@
 安装 ```requests``` ``` pip install requests ```
 
 ```
-if __name__ == '__main__':
-    from test_value import cookie_test, access_key_test, bili_eid_test
-    import time
-    suit = SuitBuy(
-        trust_env=False,
-        proxies={"http": None, "https": None},
+from test_value import cookie_test, access_key_test, bili_eid_test
 
-        # 装扮设置
-        shop_from="feed.card",
-        coupon_token="",
-        f_source="shop",
-        add_month="-1",
-        item_id="37825",
-        buy_num="1",
-        sale_time=round(time.time()),
-        app_key="1d8b6e7d45233436",
+suit = SuitBuy(
+    # 代理设置
+    # trust_env=False,
+    # proxies={"http": None, "https": None},
 
-        # 访问头设置(外)
-        header_app_key=DefaultHeaderAPPKEY,
-        accept_encoding=DefaultAcceptEncoding,
-        content_type=DefaultContentType,
-        connection=DefaultConnection,
-        api_from=DefaultApiFrom,
-        accept=DefaultAccept,
-        host=DefaultHost,
-        env=DefaultEnv,
+    # 装扮设置
+    shop_from="feed.card",
+    coupon_token="",
+    f_source="shop",
+    add_month="-1",
+    item_id="37825",
+    buy_num="1",
+    sale_time=round(time.time()),
+    app_key="1d8b6e7d45233436",
 
-        # 访问头设置(UserAgent)
-        system_version="9",
-        channel="yingyongbao",
-        sdk_int="28",
-        version="6.87.0",
-        session="1a7fb931",
-        buv_id="XY30A9D303849C51D0D6F863F84A269E887E8",
-        phone="M2007J22C",
-        build="6870300",
+    # 访问头设置(外)
+    # header_app_key=DefaultHeaderAPPKEY,
+    # accept_encoding=DefaultAcceptEncoding,
+    # content_type=DefaultContentType,
+    # connection=DefaultConnection,
+    # api_from=DefaultApiFrom,
+    # accept=DefaultAccept,
+    # host=DefaultHost,
+    # env=DefaultEnv,
 
-        # 用户验证
-        access_key=access_key_test,
-        bili_eid=bili_eid_test,
-        cookie=cookie_test
-    )
-    suit.PrintValue()
-    # print(suit.run())
+    # 访问头设置(UserAgent)
+    system_version="9",
+    channel="yingyongbao",
+    sdk_int="28",
+    version="6.87.0",
+    session="1a7fb931",
+    buv_id="XY30A9D303849C51D0D6F863F84A269E887E8",
+    phone="M2007J22C",
+    build="6870300",
+
+    # 用户验证
+    access_key=access_key_test,
+    bili_eid=bili_eid_test,
+    cookie=cookie_test
+)
+suit.PrintValue()
+# print(suit.run().text)
 ```
 
 不急一个一个看
 
-| key             | value        |
-|-----------------|--------------|
-| trust_env       | 是否信任系统代理     |
-| proxies         | 代理           |
-| shop_from       | 装扮详情页进入来源    |
-| coupon_token    | 优惠卷token     |
-| f_source        | 装扮购买位置       |
-| add_month       | 购买时长         |
-| item_id         | 装扮标识         |
-| buy_num         | 购买数量         |
-| sale_time       | 购买时间 / 开售时间  |
-| app_key         | b站app密钥      |
-| accept          | 接受类型         |
-| accept_encoding | 压缩方式         |
-| content_type    | 内容类型         |
-| system_version  | 系统版本         |
-| channel         | b站下载渠道       |
-| sdk_int         | 系统的SDK版本     |
-| version         | b站版本(x.x.x)  |
-| session         | 会话标识         |
-| buv_id          | 手机标识         |
-| phone           | 手机型号         |
-| build           | b站版本(xxxxxx) |
-| access_key      | 访问密钥         |
-| bili_eid        | 身份标识         |
-| cookie          | 用户标识         |
+| key            | value        |
+|----------------|--------------|
+| shop_from      | 详情页来源        |
+| coupon_token   | 优惠卷token     |
+| f_source       | 装扮购买位置       |
+| add_month      | 购买时长         |
+| item_id        | 装扮标识         |
+| buy_num        | 购买数量         |
+| sale_time      | 购买/开售 时间     |
+| app_key        | b站app密钥      |
+| system_version | 系统版本         |
+| channel        | b站下载渠道       |
+| sdk_int        | 系统的SDK版本     |
+| version        | b站版本(x.x.x)  |
+| session        | 会话标识         |
+| buv_id         | 手机标识         |
+| phone          | 手机型号         |
+| build          | b站版本(xxxxxx) |
+| access_key     | 访问密钥         |
+| bili_eid       | 身份标识         |
+| cookie         | 用户标识         |
 
 上述内容需通过抓包获得
 
