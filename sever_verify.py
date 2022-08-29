@@ -1,6 +1,6 @@
 # -*- coding:utf-8 -*-
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, make_response
 from flask_compress import Compress
 import requests
 import json
@@ -90,9 +90,8 @@ def garb_user_suit_asset():
     url = "https://api.bilibili.com/x/garb/v2/mall/suit/detail"
     response = session.get(url, params={"item_id": item_id})
     suit_json = response.json()
-    return_json = {"code": "0", "ttl": 1}
+    return_json, assets_list = {"code": "0", "ttl": 1}, []
     data_dict = {"id": round(time.time()), "part": "suit"}
-    assets_list = []
     data_dict.update({"state": "active", "expired_time": 0, "equiped": False})
     tab_id = suit_json["data"]["group_id"]
     fan_no_color = suit_json["data"]["properties"]["fan_no_color"]
@@ -108,27 +107,24 @@ def garb_user_suit_asset():
     item_dict.update({"sale_surplus": 0})
 
     fan_dict = {"is_fan": True, "token": suit_name, "number": 0, "color": fan_no_color}
+
     suit_date = time.strftime("%Y/%m/%d", time.localtime(time.time()))
     fan_dict.update({"name": suit_name, "luck_item_id": 0, "date": suit_date})
-
     data_dict.update({"item": item_dict})
     data_dict.update({"fan": fan_dict})
-
     assets_list += ForJsonToAssets(suit_json, "thumbup")
     assets_list += ForJsonToAssets(suit_json, "emoji_package")
     assets_list += ForJsonToAssets(suit_json, "card")[0]
     assets_list += ForJsonToAssets(suit_json, "pendant")
     assets_list += ForJsonToAssets(suit_json, "play_icon")
     assets_list += ForJsonToAssets(suit_json, "card")[1]
-
     assets_list += ForJsonToAssets(suit_json, "skin")
     assets_list += ForJsonToAssets(suit_json, "loading")
-
     assets_list += ForJsonToAssets(suit_json, "space_bg")
     assets_list += ForJsonToAssets(suit_json, "card_bg")
-
     data_dict.update({"assets": assets_list})
     return_json.update({"data": data_dict})
+
     return jsonify(return_json)
 
 
