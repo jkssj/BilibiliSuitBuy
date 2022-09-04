@@ -93,7 +93,7 @@ suit.PrintValue()
 
 **注：**```access_key bili_eid session```是有时效的
 
-[抓包教程(旧)](https://pan.baidu.com/s/1epzhwbTpBNwNUMT0E-u_TQ?pwd=uvij)
+[抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)
 
 补充: fiddler抓包要多一步
 
