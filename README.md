@@ -2,7 +2,7 @@
 
 **B站装扮购买全模拟(98%)**
 
-~~socket直接发报文测试中 [test-socket](../socket-test/socket_suit_buy.py)~~
+~~socket直接发报文测试中 [test-socket](../main/socket-test/socket_suit_buy.py)~~
 
 哎，虽然我又重新上传了，但只是留个档，以后要看不至于找不到♿
 
