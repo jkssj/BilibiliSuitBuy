@@ -97,10 +97,6 @@ suit.PrintValue()
 
 [抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)
 
-补充: fiddler抓包要多一步
-
-Tools -> Options -> HTTPS -> Actions -> Trust Root Certificate
-
 锁定url为 "https://api.bilibili.com/x/garb/v2/mall/suit/detail" (随便点一个装扮的商店页就有) 的包, 里面包含了所有需要的内容
 
 ------------------------------------------------
