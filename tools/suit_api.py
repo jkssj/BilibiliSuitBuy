@@ -1,10 +1,12 @@
 from requests.utils import cookiejar_from_dict
 from urllib.parse import urlencode
-from typing import Union
 import requests
+import winsound
+import datetime
 import hashlib
 import uuid
 import time
+import sys
 
 
 class BiliSession(requests.Session):
@@ -34,7 +36,7 @@ class BiliSession(requests.Session):
         assert __cookies, "bili_eid not in kwargs"
 
         # Host and url
-        __Host = kwargs.get("host", "api.biliapi.net")
+        __Host = kwargs.get("host", "api.bilibili.com")
         self.unpaid_url = ("GET", f"https://{__Host}/x/garb/order/item/count/unpaid")
         self.detail_url = ("GET", f"https://{__Host}/x/garb/v2/mall/suit/detail")
         self.nav_url = ("GET", f"https://{__Host}/x/web-interface/nav")
@@ -318,28 +320,25 @@ class SuitTools(RequestTools):
     def __init__(self, **kwargs):
         super(SuitTools, self).__init__(**kwargs)
 
-    def test(self):
-        print(self.SuitUnpaid())
-        print(self.SuitDetail())
-        print(self.SuitNav())
-        print(self.SuitRecent())
-        print(self.SuitCreate(1))
-        print(self.SuitList())
-
-    def run(self):
-        self.handle()
+    @staticmethod
+    def PrintLog(*objects, sep=' ', end='\n', file=sys.stdout, flush=False):
+        """ 带时间打印 """
+        time_str = f"[{datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f')[:-3]}]"
+        time_str_c = "\033[31;1m" + time_str + "\033[0m"
+        print(time_str_c, *objects, sep=sep, end=end, file=file, flush=flush)
 
     def handle(self):
         ...
+        # print(self.SuitUnpaid())
+        # print(self.SuitDetail())
+        # print(self.SuitNav())
+        # print(self.SuitRecent())
+        # print(self.SuitCreate(1))
+        # print(self.SuitList())
 
+    def run(self, *args, **kwargs):
+        self.handle(*args, **kwargs)
 
-def main():
-    from config import a_config
-
-    suit_tools = SuitTools(**a_config)
-    # suit_tools.test()
-    # suit_tools.run()
-
-
-if __name__ == '__main__':
-    main()
+       
+suit_tools = SuitTools(**config)
+suit_tools.run(max_number=2, time_sleep=0.1)
