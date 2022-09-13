@@ -54,7 +54,7 @@ if __name__ == '__main__':
 
 这次舍弃了很多不必要的参数, 只需要填写```http_message_file```的值即可运行
 
-~~[抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)~~先看着，有时间找个新电脑录个
+~~[抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)先看着，有时间找个新电脑录个~~
 
 锁定url为 ```/x/garb/v2/mall/suit/detail``` 的包, 选中后点击 ```Raw```
 
