@@ -191,11 +191,11 @@ func main() {
 	(*config).FSource = "shop"
 	(*config).CouponToken = ""
 	(*config).ShopFrom = "feed.card"
-	(*config).SaleTime = 1663058122
+	(*config).SaleTime = time.Now().Unix()
 	(*config).BuyNum = 1
 	(*config).AddMonth = -1
-
-	var HttpMessageFile string = FileReader("message.txt")
+	var FileSavePath string = "C:\\Users\\afue\\Desktop\\bili-suit-buy\\message\\message.txt"
+	var HttpMessageFile string = FileReader(FileSavePath)
 	var MessageMap map[string]string = ParseHttpMessage(HttpMessageFile)
 	var HttpMessage []byte = UpdateHttpMessage(MessageMap, config)
 
