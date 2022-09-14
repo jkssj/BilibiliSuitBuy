@@ -206,6 +206,8 @@ func main() {
 	var _, _ = client.Write(HttpMessage)
 	var _, _ = client.Read(result)
 	var EndTime int64 = time.Now().UnixNano() / 1e6
+	
+	var _ = client.Close()
 
 	fmt.Printf("%v\n", string(result))
 	fmt.Printf("%v\n", EndTime-StartTime)
