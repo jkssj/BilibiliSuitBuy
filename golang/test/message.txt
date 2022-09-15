@@ -1,0 +1,17 @@
+GET https://api.bilibili.com/x/garb/v2/mall/suit/detail?access_key=c4f743da4d60dac013a2e73c07fb1991&appkey=1d8b6e7d45233436&csrf=6c743be03d9dc31213708f0ae0fe1a48&disable_rcmd=0&from=&from_id=&item_id=38120&part=suit&statistics=%7B%22appId%22%3A1%2C%22platform%22%3A3%2C%22version%22%3A%226.89.0%22%2C%22abtest%22%3A%22%22%7D&ts=1662855186&sign=fac565ca9973b721a6050c9162d96568 HTTP/1.1
+native_api_from: h5
+Cookie: SESSDATA=13e03c39%2C1678359367%2Cc4f9cb91; bili_jct=6c743be03d9dc31213708f0ae0fe1a48; DedeUserID=1701735549; DedeUserID__ckMd5=980129ac5cba80fa; sid=8lxnn3rc; Buvid=XY30A9D303849C51D0D6F863F84A269E887E8
+Accept: application/json, text/plain, */*
+Referer: https://www.bilibili.com/h5/mall/suit/detail?id=38120&navhide=1&f_source=shop&from=feed.card
+Content-Type: application/json
+env: prod
+APP-KEY: android
+User-Agent: Mozilla/5.0 (Linux; Android 9; SM-G9810 Build/QP1A.190711.020; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/92.0.4515.131 Mobile Safari/537.36 os/android model/SM-G9810 build/6890300 osVer/9 sdkInt/28 network/2 BiliApp/6890300 mobi_app/android channel/yingyongbao Buvid/XY30A9D303849C51D0D6F863F84A269E887E8 sessionID/fa2dfdac innerVer/6890300 c_locale/zh_CN s_locale/zh_CN disable_rcmd/0 6.89.0 os/android model/SM-G9810 mobi_app/android build/6890300 channel/yingyongbao innerVer/6890300 osVer/9 network/2
+x-bili-trace-id: c446b2e9c2b96969fb9a020507631d28:fb9a020507631d28:0:0
+x-bili-aurora-eid: UFMBR1YHA1QDVQ==
+x-bili-mid: 1701735549
+x-bili-aurora-zone:
+Host: api.bilibili.com
+Connection: Keep-Alive
+Accept-Encoding: gzip
+
