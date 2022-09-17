@@ -8,7 +8,7 @@
 
 <font size=3>**使用GoLang, Python两个语言分别编写2个逻辑相同的版本，后续会加入其他语言**</font>
 
-<font size=3>**python-requests： 采用requests库还请求，提前创建表单计算sign啥的远古版本就有了**</font>
+<font size=3>**python-requests(弃了)： 采用requests库来请求，提前创建表单计算sign啥的远古版本就有了**</font>
 
 <font size=3>**python-socket： 采用socket提前连接，包含提前创建表单，计算sign等**</font>
 
