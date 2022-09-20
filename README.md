@@ -6,15 +6,15 @@
 
 <font size=4>**此装扮购买脚本后续更新的代码均不包含计时器**</font>
 
-<font size=3>**使用GoLang, Python两个语言分别编写2个逻辑相同的版本，后续会加入其他语言**</font>
+<font size=2>**使用GoLang, Python两个语言分别编写2个逻辑相同的版本**</font>
 
-<font size=3>**python-requests(弃了)： 采用requests库来请求，提前创建表单计算sign啥的远古版本就有了**</font>
+<font size=2>**python-requests（弃了）： 采用requests库来请求，提前创建表单计算sign啥的远古版本就有了**</font>
 
-<font size=3>**python-socket： 采用socket提前连接，包含提前创建表单，计算sign等**</font>
+<font size=2>**python-socket： 采用socket提前连接，包含提前创建表单，计算sign等**</font>
 
-<font size=3>**golang-socket，和python思路一样，socket提前链接，提前创建表单和计算sign**</font>
+<font size=2>**golang-socket：和python思路一样，socket提前链接，提前创建表单和计算sign**</font>
 
-<font size=2>**注：如果只是想试运行不要充足够的B币，现在b站是一步完成，下单即付款购买**</font>
+<font size=1>**注：如果只是想试运行不要充足够的B币，现在b站是一步完成，下单即付款购买**</font>
 
 ------------------------------------------------
 
@@ -77,7 +77,11 @@ if __name__ == '__main__':
 
 同python-requests
 
-摸了先
+众所周知服务端接收不到客户端的body会阻塞，尝试报文取最后一个字节，其他的提前发送，再接收1bit的数据来判断服务器处理完成
+
+这样就变成了到时间 发送1bit大小数据，再接收1bit大小的数据来验证服务器处理，来回时间明显下降
+
+快过requests，略微快过socket提前连接直接发送全部报文
 
 ------------------------------------------------
 <font size=4>**运行（golang-socket）：**</font>
