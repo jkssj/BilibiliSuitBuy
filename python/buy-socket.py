@@ -195,12 +195,12 @@ def main():
 
     # 跳出本地计时器后
     suit_buy.Link()
-
+    suit_buy.SendMessageHeader()
     # 等待服务器计时退出
 
-    rep, t = suit_buy.test()
-    print(rep)
-    print(t, "ms")
+    suit_buy.SendMessageBody()
+    response = suit_buy.Receive()
+    print(response)
 
 
 if __name__ == '__main__':
