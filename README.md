@@ -4,23 +4,37 @@
 
 ------------------------------------------------
 
-<font size=4>**此装扮购买脚本后续更新的代码均不包含计时器**</font>
+**此装扮购买脚本本体不包括计时器、登陆、自动读取开售时间等操作**
 
-<font size=2>**使用GoLang, Python两个语言分别编写2个逻辑相同的版本**</font>
+**但写还是会写出来放在单独的文件里，要用的话自己搭积木**
 
-<font size=2>**python-requests（弃了）： 采用requests库来请求，提前创建表单计算sign啥的远古版本就有了**</font>
-
-<font size=2>**python-socket： 采用socket提前连接，包含提前创建表单，计算sign等**</font>
-
-<font size=2>**golang-socket：和python思路一样，socket提前链接，提前创建表单和计算sign**</font>
-
-<font size=1>**注：如果只是想试运行不要充足够的B币，现在b站是一步完成，下单即付款购买**</font>
+**什么年代了还在用传统http请求库**
 
 ------------------------------------------------
 
-<font size=4>**运行（python-requests）：**</font>
+**特点：**
 
-安装 ```requests``` ``` pip install requests ```
+即使是python也有一战之力
+
+我们都知道HTTP协议是基于TCP协议的应用层传输协议
+
+说到TCP是否可以使用socket来提前进行连接
+
+客户端这边时间一到就直接发送报文
+
+再优化优化，提前生成报文头和报文体啥的
+
+再把整个报文切割成 n-1 : 1 的大小
+
+这样我们可以提前连接后再提前发送那n-1的报文
+
+等待开售时间一到我们只需要发送那1bit的数据
+
+这样我们就把原本开售时间到后繁琐的步骤简化为只需要发送1bit数据，然后接受响应就行
+
+------------------------------------------------
+
+<font size=4>**运行（python-socket）：**</font>
 
 ```
 
@@ -40,8 +54,16 @@ def main():
         sale_time=round(time.time())
     )
 
-    # suit_buy.test()
-    print(suit_buy.start().text)
+    # 跳出本地计时器后
+    
+    suit_buy.Link()  # 连接到服务器
+    suit_buy.SendMessageHeader()  # 提前发送数据
+    
+    # 等待服务器计时退出后
+    
+    suit_buy.SendMessageBody()  # 发送剩余数据
+    response = suit_buy.Receive()  # 接收响应
+    print(response)
 
 
 if __name__ == '__main__':
@@ -63,30 +85,24 @@ if __name__ == '__main__':
 
 这次舍弃了很多不必要的参数, 只需要填写```http_message_file```的值即可运行
 
-~~[抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)先看着，有时间找个新电脑录个~~
+相比requests库来实现简化了更多步骤
 
-锁定url为 ```/x/garb/v2/mall/suit/detail``` 的包, 选中后点击 ```Raw```
-
-```ctrl+a```全选```ctrl+c```复制, 然后创建一个文本文件```ctrl+v```粘贴进去 最后```ctrl+s```保存
-
-```http_message_file```就写刚刚创建的文本文件路径
+**抓包教程最下面有**
 
 ------------------------------------------------
 
-<font size=4>**运行（python-socket）：**</font>
+~~<font size=4>**运行（python-requests）：**</font>~~
 
-同python-requests
+~~弃了，太慢了，虽然还是比绿色用户快就是~~
 
-众所周知服务端接收不到客户端的body会阻塞，尝试报文取最后一个字节，其他的提前发送，再接收1bit的数据来判断服务器处理完成
+~~安装 ```requests``` ``` pip install requests ```~~
 
-这样就变成了到时间 发送1bit大小数据，再接收1bit大小的数据来验证服务器处理，来回时间明显下降
-
-快过requests，略微快过socket提前连接直接发送全部报文
+~~同python-socket~~
 
 ------------------------------------------------
 <font size=4>**运行（golang-socket）：**</font>
 
-无需安装任何第三方库（我不想用那包管理器，太恶心了，可能因为用惯pip了）
+~~你这go怎么这么像python啊~~
 
 ```
 func main() {
@@ -115,17 +131,27 @@ func main() {
 | (*config).SaleTime    | 购买/开售 时间    | time.Now().Unix() |
 | (*config).CouponToken | 优惠卷         | None              |
 
+**抓包教程最下面有**
+
+------------------------------------------------
+
+**抓包教程：**
+
 ~~[抓包教程(新)](https://www.bilibili.com/video/BV1Re411g7f5/)先看着，有时间找个新电脑录个~~
 
 锁定url为 ```/x/garb/v2/mall/suit/detail``` 的包, 选中后点击 ```Raw```
 
 ```ctrl+a```全选```ctrl+c```复制, 然后创建一个文本文件```ctrl+v```粘贴进去 最后```ctrl+s```保存
 
-```FileSavePath```就写刚刚创建的文本文件路径（最好就绝对路径）
+保存的文件就是http报文的文件
 
 ------------------------------------------------
-<font size=6>**总结：** </font>
+**总结：**
+
+你问我为什么不开，我没钱，我没账号，我没设备，我没销售渠道，我啥都没有，我开个✓8
 
 ~~不是我说， [爬娘](https://space.bilibili.com/647193094)真的是，只有被人举办的才封，演起来没动的屁事没有~~
 
-你好，我是秦始皇，其实我并没有死，我在西安有100吨黄金，我现在需要2000元人民币解冻我在西安的黄金，你微信，支付宝转给我都可以。账号就是我的手机号码！转过来后，我明天直接带部队复活，让你统领三军！
+~~？你先开的~~
+
+~~多线程 / 异步是错误的~~
