@@ -158,6 +158,15 @@ class SuitBuy(SuitSocket):
     def Link(self, port=443):
         self.client.connect((self.host, port))
 
+    def Receive(self, len_=4095):
+        return self.client.recv(len_)
+
+    def SendMessageHeader(self):
+        self.client.send(self.message_header)
+
+    def SendMessageBody(self):
+        self.client.send(self.message_body)
+
     def test(self):
         self.client.send(self.message_header)
 
