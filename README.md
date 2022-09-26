@@ -10,7 +10,7 @@
 
 **什么年代了还在用传统http请求库**
 
-**我大意了啊，没有闪 fiddler classic不支持http2.0，现在均是http1.1**
+**我大意了啊，没有闪fiddler classic不支持http2.0，现在均是http1.1**
 
 ------------------------------------------------
 
@@ -41,7 +41,9 @@
 - [x] **cookies**
 - [x] **x-bili-aurora-eid**
 - [x] **x-bili-trace-id**
-
+- [] **HTTP2.0
+	-[] httpx
+	-[] socket
 ------------------------------------------------
 
 <font size=4>**运行（python-socket）：**</font>
