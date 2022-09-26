@@ -41,9 +41,8 @@
 - [x] **cookies**
 - [x] **x-bili-aurora-eid**
 - [x] **x-bili-trace-id**
-- [] **HTTP2.0
-	-[] httpx
-	-[] socket
+- [ ] **HTTP2.0
+
 ------------------------------------------------
 
 <font size=4>**运行（python-socket）：**</font>
