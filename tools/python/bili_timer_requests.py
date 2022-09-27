@@ -25,8 +25,8 @@ class BiliTimer(requests.Session):
     def WaitSeverTime(self, time_sleep=0.02):
         now_time = self.GetBiliTime()
         while self.sale_time >= now_time:
-            now_time = self.GetBiliTime()
             time.sleep(time_sleep)
+            now_time = self.GetBiliTime()
         return now_time
 
     def WaitLocalTime(self, jump_time: int):
