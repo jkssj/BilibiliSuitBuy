@@ -117,6 +117,8 @@ if __name__ == '__main__':
 
 ~~你这go怎么这么像python啊~~
 
+~~ssl问题暂时别动~~
+
 ```
 func main() {
 	var config = new(Config)
