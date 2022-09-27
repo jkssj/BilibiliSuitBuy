@@ -185,6 +185,9 @@ func UpdateHttpMessage(ValueMap map[string]string, config *Config) []byte {
 	return []byte(HttpMessage)
 }
 
+
+// 无ssl
+
 func main() {
 	var config = new(Config)
 	(*config).Host = "api.bilibili.com"
