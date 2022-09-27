@@ -15,7 +15,7 @@ import ssl
 
 class SuitSocket(object):
     def __init__(self, http_message_file, **kwargs):
-        self.client = ssl.wrap_socket(socket.socket())
+        self.client = ssl.wrap_socket(socket.socket(), ssl_version=ssl.PROTOCOL_TLSv1_2)
         with open(http_message_file, "rb") as message_file:
             message_content = message_file.read()
         message_file.close()
