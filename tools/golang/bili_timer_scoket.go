@@ -75,8 +75,8 @@ func (bili *BiliTimer) WaitSeverTime(sleep float64) float64 {
 	var NowTime float64 = bili.GetBiliTime()
 	for bili.SaleTime >= NowTime {
 		fmt.Printf("%f\n", NowTime)
-		NowTime = bili.GetBiliTime()
 		time.Sleep(time.Duration(sleep) * time.Second)
+		NowTime = bili.GetBiliTime()
 	}
 	return NowTime
 }
