@@ -36,7 +36,7 @@ func (bili *BiliTimer) init(SaleTime float64, args map[string]string) *BiliTimer
 
 	var message string = ""
 
-	message += fmt.Sprintf("GET https://%v/x/report/click/now HTTP/1.1\r\n", bili._host)
+	message += fmt.Sprintf("GET http://%v/x/report/click/now HTTP/1.1\r\n", bili._host)
 	message += fmt.Sprintf("host: %v\r\nConnection: keep-alive\r\n", bili._host)
 	message += fmt.Sprintf("User-Agent: %v\r\n\r\n", _UserAgent)
 
