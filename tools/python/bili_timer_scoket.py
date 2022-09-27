@@ -21,7 +21,10 @@ class BiliTimer(object):
         _message += f"host: {self._host}\r\nConnection: keep-alive\r\n"
         _message += f"User-Agent: {_user_agent}\r\n\r\n"
         self.message = _message.encode()
-
+    
+    def __del__(self):
+        self.client.close()
+    
     def GetBiliTime(self):
         self.client.sendall(self.message)
         body = self.client.read().split(b"\r\n\r\n")[-1]
