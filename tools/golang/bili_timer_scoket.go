@@ -42,10 +42,6 @@ func (bili *BiliTimer) init(SaleTime float64, args map[string]string) *BiliTimer
 
 	bili.message = []byte(message)
 
-	var Adder = fmt.Sprintf("%v:80", bili._host)
-	var client, _ = net.Dial("tcp", Adder)
-	bili.client = client
-
 	return bili
 }
 
@@ -62,6 +58,10 @@ func (bili *BiliTimer) GetBiliTime() float64 {
 }
 
 func (bili *BiliTimer) WaitLocalTime(jump int64) {
+	var Adder = fmt.Sprintf("%v:80", bili._host)
+	var client, _ = net.Dial("tcp", Adder)
+	bili.client = client
+
 	var NowTime, JumpTime float64
 	NowTime = float64(time.Now().UnixNano()) / 1e9
 	JumpTime = bili.SaleTime - float64(jump)
@@ -94,7 +94,8 @@ func main() {
 	// ...
 
 	// 等待服务器跳出, 每次请求间隔0.02秒
-	bili.WaitSeverTime(0.02)
+	// 别太快，会ban，返回0.0
+	bili.WaitSeverTime(1)
 
 	// ...
 }
