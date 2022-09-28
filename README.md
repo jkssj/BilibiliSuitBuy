@@ -117,33 +117,47 @@ if __name__ == '__main__':
 
 ~~你这go怎么这么像python啊~~
 
-~~ssl问题暂时别动~~
-
 ```
 func main() {
-	var config = new(Config)
+	var FilePath string = "./buy_suit/http-message/HTTP1.1Message.txt" // 报文文件路径
+	var SaleTime = time.Now().Unix()                                   // 装扮开售时间
+
+	var config *Config = &DefaultConfig
 	(*config).Host = "api.bilibili.com"
-	(*config).FSource = "shop"
-	(*config).CouponToken = ""
 	(*config).ShopFrom = "feed.card"
-	(*config).SaleTime = time.Now().Unix()
+	(*config).FSource = "shop"
 	(*config).BuyNum = 1
 	(*config).AddMonth = -1
-	var FileSavePath string = "./message.txt"
-	var HttpMessageFile string = FileReader(FileSavePath)
-	...
+	(*config).CouponToken = ""
+
+	var SuitBuyC *SuitBuy = new(SuitBuy).init(FilePath, SaleTime, config)
+
+	fmt.Printf("%v\n", string(SuitBuyC.BuyMessageHeader))
+
+	// 跳出本地计时器
+
+	SuitBuyC.LinkSever()  // 连接到服务器
+	SuitBuyC.SendHeader() // 发送n-1的头数据
+
+	// 跳出服务器计时器
+
+	SuitBuyC.SendBody() // 发出剩下的数据
+
+	// 打印响应
+	var Response string = SuitBuyC.ReceiveResponse()
+	fmt.Printf("%v", Response)
 }
 ```
 
 | key                   | value       | default           |
 |-----------------------|-------------|-------------------|
-| FileSavePath          | fiddler报文路径 | None              |
+| FilePath          | fiddler报文路径 | None              |
+| SaleTime    | 购买/开售 时间    | time.Now().Unix() |
 | (*config).AddMonth    | 购买时长        | -1                |
 | (*config).BuyNum      | 购买数量        | 1                 |
 | (*config).Host        | 地址          | api.bilibili.com  |
 | (*config).FSource     | 购买源头        | shop              |
 | (*config).ShopFrom    | 进入源头        | feed.card         |
-| (*config).SaleTime    | 购买/开售 时间    | time.Now().Unix() |
 | (*config).CouponToken | 优惠卷         | None              |
 
 **抓包教程最下面有**
