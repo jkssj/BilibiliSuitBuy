@@ -235,8 +235,9 @@ func (bili *SuitBuy) init(FilePath string, SaleTime int64, config *Config) *Suit
 }
 
 func (bili *SuitBuy) LinkSever() {
+	var TlsConfig *tls.Config = &tls.Config{MinVersion: tls.VersionTLS12}
 	var Adder string = fmt.Sprintf("%v:443", bili.Host)
-	var client, err = tls.Dial("tcp", Adder, nil)
+	var client, err = tls.Dial("tcp", Adder, TlsConfig)
 	ExitError(err)
 	bili.client = client
 }
