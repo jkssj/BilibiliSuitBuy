@@ -262,7 +262,7 @@ func (bili *SuitBuy) ReceiveResponse() string {
 }
 
 func main() {
-	var FilePath = "C:\\Users\\afue\\Desktop\\BilibiliSuitBuy-main\\buy_suit\\http-message\\HTTP1.1Message.txt"
+	var FilePath = "../buy_suit/http-message/HTTP1.1Message.txt"
 
 	var config *Config = &DefaultConfig
 
