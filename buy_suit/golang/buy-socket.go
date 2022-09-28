@@ -262,20 +262,29 @@ func (bili *SuitBuy) ReceiveResponse() string {
 }
 
 func main() {
-	var FilePath = "../buy_suit/http-message/HTTP1.1Message.txt"
+	var FilePath string = "./buy_suit/http-message/HTTP1.1Message.txt" // 报文文件路径
+	var SaleTime = time.Now().Unix()                                   // 装扮开售时间
 
 	var config *Config = &DefaultConfig
+	(*config).Host = "api.bilibili.com"
+	(*config).ShopFrom = "feed.card"
+	(*config).FSource = "shop"
+	(*config).BuyNum = 1
+	(*config).AddMonth = -1
+	(*config).CouponToken = ""
 
-	var SuitBuyC *SuitBuy = new(SuitBuy).init(FilePath, 1661675845, config)
+	var SuitBuyC *SuitBuy = new(SuitBuy).init(FilePath, SaleTime, config)
+
+	fmt.Printf("%v\n", string(SuitBuyC.BuyMessageHeader))
 
 	// 跳出本地计时器
 
-	SuitBuyC.LinkSever()
-	SuitBuyC.SendHeader()
+	SuitBuyC.LinkSever()  // 连接到服务器
+	SuitBuyC.SendHeader() // 发送n-1的头数据
 
 	// 跳出服务器计时器
 
-	SuitBuyC.SendBody() // 发出以后的数据
+	SuitBuyC.SendBody() // 发出剩下的数据
 
 	// 打印响应
 	var Response string = SuitBuyC.ReceiveResponse()
