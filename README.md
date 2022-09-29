@@ -132,8 +132,6 @@ func main() {
 
 	var SuitBuyC *SuitBuy = new(SuitBuy).init(FilePath, SaleTime, config)
 
-	fmt.Printf("%v\n", string(SuitBuyC.BuyMessageHeader))
-
 	// 跳出本地计时器
 
 	SuitBuyC.LinkSever()  // 连接到服务器
