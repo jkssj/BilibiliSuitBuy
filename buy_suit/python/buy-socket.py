@@ -15,7 +15,11 @@ import ssl
 
 class SuitSocket(object):
     def __init__(self, http_message_file, **kwargs):
-        self.client = ssl.wrap_socket(socket.socket(), ssl_version=ssl.PROTOCOL_TLSv1_2)
+        self.context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        self.context.purpose = ssl.Purpose.SERVER_AUTH
+        self.context.verify_mode = ssl.CERT_REQUIRED
+        self.context.load_default_certs()
+
         with open(http_message_file, "rb") as message_file:
             message_content = message_file.read()
         message_file.close()
@@ -152,36 +156,38 @@ class SuitBuy(SuitSocket):
     def __init__(self, http_message_file, **kwargs):
         super(SuitBuy, self).__init__(http_message_file, **kwargs)
 
-    def __del__(self):
-        self.client.close()
-
     def Link(self, port=443):
-        self.client.connect((self.host, port))
+        adder = (self.host, port)
+        socket_connection = socket.create_connection(adder)
+        client = self.context.wrap_socket(socket_connection)
+        client.server_hostname = self.host
+        return client
 
-    def Receive(self, len_=4095):
-        return self.client.recv(len_)
+    @staticmethod
+    def Receive(client, len_=4095):
+        return client.recv(len_)
 
-    def SendMessageHeader(self):
-        self.client.send(self.message_header)
+    def SendMessageHeader(self, client):
+        client.send(self.message_header)
 
-    def SendMessageBody(self):
-        self.client.send(self.message_body)
+    def SendMessageBody(self, client):
+        client.send(self.message_body)
 
-    def test(self):
-        self.client.send(self.message_header)
+    def test(self, client):
+        client.send(self.message_header)
 
         s = time.time()
-        self.client.send(self.message_body)
-        response_ = self.client.recv(1)
+        client.send(self.message_body)
+        response_ = client.recv(1)
         e = time.time()
 
-        response = self.client.recv(4095)
+        response = client.recv(4095)
         return (response_ + response).decode(), (e - s) * 1000
 
 
 def main():
     suit_buy = SuitBuy(
-        http_message_file=r"buy_suit/http-message/HTTP1.1Message.txt",
+        http_message_file=r"C:\Users\afue\Desktop\BilibiliSuitBuy-main\buy_suit\http-message\HTTP1.1Message.txt",
 
         # 可选
         add_month="-1",
@@ -194,12 +200,12 @@ def main():
     )
 
     # 跳出本地计时器后
-    suit_buy.Link()
-    suit_buy.SendMessageHeader()
+    client = suit_buy.Link()
+    suit_buy.SendMessageHeader(client)
     # 等待服务器计时退出
 
-    suit_buy.SendMessageBody()
-    response = suit_buy.Receive()
+    suit_buy.SendMessageBody(client)
+    response = suit_buy.Receive(client)
     print(response)
 
 
