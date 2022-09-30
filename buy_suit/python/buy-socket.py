@@ -159,8 +159,7 @@ class SuitBuy(SuitSocket):
         super(SuitBuy, self).__init__(http_message_file, **kwargs)
 
     def Link(self, port=443):
-        adder = (self.host, port)
-        connection = socket.create_connection(adder)
+        connection = socket.create_connection((self.host, port))
         _kwargs = {"server_hostname": self.host}
         client = self.context.wrap_socket(connection, **_kwargs)
         return client
