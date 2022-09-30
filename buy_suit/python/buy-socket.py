@@ -18,6 +18,7 @@ class SuitSocket(object):
         self.context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
         self.context.purpose = ssl.Purpose.SERVER_AUTH
         self.context.verify_mode = ssl.CERT_REQUIRED
+        self.context.check_hostname = True
         self.context.load_default_certs()
 
         with open(http_message_file, "rb") as message_file:
