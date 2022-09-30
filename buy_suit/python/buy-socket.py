@@ -20,6 +20,7 @@ class SuitSocket(object):
         self.context.verify_mode = ssl.CERT_REQUIRED
         self.context.check_hostname = True
         self.context.load_default_certs()
+        print(self.context.__dict__)
 
         with open(http_message_file, "rb") as message_file:
             message_content = message_file.read()
@@ -159,13 +160,13 @@ class SuitBuy(SuitSocket):
 
     def Link(self, port=443):
         adder = (self.host, port)
-        socket_connection = socket.create_connection(adder)
-        client = self.context.wrap_socket(socket_connection)
-        client.server_hostname = self.host
+        connection = socket.create_connection(adder)
+        _kwargs = {"server_hostname": self.host}
+        client = self.context.wrap_socket(connection, **_kwargs)
         return client
 
     @staticmethod
-    def Receive(client, len_=4095):
+    def Receive(client, len_=4095) -> bytes:
         return client.recv(len_)
 
     def SendMessageHeader(self, client):
@@ -207,7 +208,7 @@ def main():
 
     suit_buy.SendMessageBody(client)
     response = suit_buy.Receive(client)
-    print(response)
+    print(response.decode())
 
 
 if __name__ == '__main__':
