@@ -15,13 +15,6 @@ import ssl
 
 class SuitSocket(object):
     def __init__(self, http_message_file, **kwargs):
-        self.context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-        self.context.purpose = ssl.Purpose.SERVER_AUTH
-        self.context.verify_mode = ssl.CERT_REQUIRED
-        self.context.check_hostname = True
-        self.context.load_default_certs()
-        print(self.context.__dict__)
-
         with open(http_message_file, "rb") as message_file:
             message_content = message_file.read()
         message_file.close()
@@ -159,9 +152,14 @@ class SuitBuy(SuitSocket):
         super(SuitBuy, self).__init__(http_message_file, **kwargs)
 
     def Link(self, port=443):
+        context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        context.purpose = ssl.Purpose.SERVER_AUTH
+        context.verify_mode = ssl.CERT_REQUIRED
+        context.check_hostname = True
+        context.load_default_certs()
         connection = socket.create_connection((self.host, port))
         _kwargs = {"server_hostname": self.host}
-        client = self.context.wrap_socket(connection, **_kwargs)
+        client = context.wrap_socket(connection, **_kwargs)
         return client
 
     @staticmethod
@@ -203,10 +201,11 @@ def main():
     # 跳出本地计时器后
     client = suit_buy.Link()
     suit_buy.SendMessageHeader(client)
-    # 等待服务器计时退出
 
+    # 等待服务器计时退出
     suit_buy.SendMessageBody(client)
     response = suit_buy.Receive(client)
+
     print(response.decode())
 
 
