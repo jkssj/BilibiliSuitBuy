@@ -186,7 +186,7 @@ class SuitBuy(SuitSocket):
 
 def main():
     suit_buy = SuitBuy(
-        http_message_file=r"C:\Users\afue\Desktop\BilibiliSuitBuy-main\buy_suit\http-message\HTTP1.1Message.txt",
+        http_message_file=r"buy_suit/http-message/HTTP1.1Message.txt",
 
         # 可选
         add_month="-1",
