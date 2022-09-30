@@ -117,6 +117,8 @@ if __name__ == '__main__':
 
 ~~你这go怎么这么像python啊~~
 
+~~ssl可能还存在问题，但python版的应该没啥了~~
+
 ```
 func main() {
 	var FilePath string = "./buy_suit/http-message/HTTP1.1Message.txt" // 报文文件路径
