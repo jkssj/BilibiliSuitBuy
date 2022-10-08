@@ -53,7 +53,6 @@ class SuitSocket(object):
             "disable_rcmd": "0",
             "f_source": str(__f_source),
             "from": str(__shop_from),
-            "from_id": "",
             "item_id": str(__item_id),
             "platform": "android",
             "statistics": __statistics,
@@ -88,7 +87,7 @@ class SuitSocket(object):
         message += f"Referer: https://www.bilibili.com/h5/mall/suit/detail{__referer}\r\n"
         message += f"env: prod\r\nAPP-KEY: android\r\nUser-Agent: {__UserAgent}\r\n"
         message += f"x-bili-trace-id: {__TraceId}\r\nx-bili-aurora-eid: {__bili_eid}\r\n"
-        message += f"x-bili-mid: {__DedeUserID}\r\nx-bili-aurora-zone: \r\nbili-bridge-engine: cronet\r\n"
+        message += f"x-bili-mid: {__DedeUserID}\r\nx-bili-aurora-zone: \r\n"
         message += f"Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n"
         message += f"Content-Length: {len(form_data)}\r\nHost: {__host}\r\n"
         message += f"Connection: Keep-Alive\r\nAccept-Encoding: gzip\r\n\r\n{form_data}"
