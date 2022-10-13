@@ -55,6 +55,7 @@ class SuitSession(requests.Session):
             "from": str(__shop_from),
             "from_id": "",
             "item_id": str(__item_id),
+            "m_source": "",
             "platform": "android",
             "statistics": __statistics,
             "ts": str(__sale_time)
