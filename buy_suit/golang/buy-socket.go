@@ -199,6 +199,7 @@ func UpdateHttpMessage(HttpMap map[string]string, SaleTime int64, config *Config
 		"from":         __ShopFrom,
 		"from_id":      "",
 		"item_id":      __ItemId,
+		"m_source":     "",
 		"platform":     "android",
 		"statistics":   __statistics,
 		"ts":           __SaleTime,
