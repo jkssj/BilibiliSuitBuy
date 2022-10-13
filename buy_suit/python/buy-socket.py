@@ -53,7 +53,9 @@ class SuitSocket(object):
             "disable_rcmd": "0",
             "f_source": str(__f_source),
             "from": str(__shop_from),
+            "from_id": "",
             "item_id": str(__item_id),
+            "m_source": ""
             "platform": "android",
             "statistics": __statistics,
             "ts": str(__sale_time)
