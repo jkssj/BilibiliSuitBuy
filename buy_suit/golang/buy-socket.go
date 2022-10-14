@@ -236,7 +236,12 @@ func (bili *SuitBuy) init(FilePath string, SaleTime int64, config *Config) *Suit
 }
 
 func (bili *SuitBuy) LinkSever() {
-	var TlsConfig *tls.Config = &tls.Config{MinVersion: tls.VersionTLS12}
+	var TlsConfig *tls.Config = &tls.Config{
+		MinVersion:         tls.VersionTLS12,
+		MaxVersion:         tls.VersionTLS12,
+		ClientAuth:         tls.VerifyClientCertIfGiven,
+		InsecureSkipVerify: false,
+	}
 	var Adder string = fmt.Sprintf("%v:443", bili.Host)
 	var client, err = tls.Dial("tcp", Adder, TlsConfig)
 	ExitError(err)
@@ -264,7 +269,7 @@ func (bili *SuitBuy) ReceiveResponse() string {
 
 func main() {
 	var FilePath string = "./buy_suit/http-message/HTTP1.1Message.txt" // 报文文件路径
-	var SaleTime = time.Now().Unix()                                   // 装扮开售时间
+	var SaleTime = time.Now().Unix()    // 装扮开售时间
 
 	var config *Config = &DefaultConfig
 	(*config).Host = "api.bilibili.com"
