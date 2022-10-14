@@ -162,7 +162,7 @@ class SuitBuy(SuitSocket):
         _kwargs = {"server_hostname": self.host}
         client = context.wrap_socket(connection, **_kwargs)
         return client
-   
+    
     def Link310(self, port=443):
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
         context.purpose = ssl.Purpose.SERVER_AUTH
@@ -198,7 +198,7 @@ class SuitBuy(SuitSocket):
 
 def main():
     suit_buy = SuitBuy(
-        http_message_file=r"buy_suit/http-message/HTTP1.1Message.txt",
+        http_message_file=r"HTTP1.1Message.txt",
 
         # 可选
         add_month="-1",
