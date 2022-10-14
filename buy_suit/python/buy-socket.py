@@ -162,6 +162,17 @@ class SuitBuy(SuitSocket):
         _kwargs = {"server_hostname": self.host}
         client = context.wrap_socket(connection, **_kwargs)
         return client
+   
+    def Link310(self, port=443):
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        context.purpose = ssl.Purpose.SERVER_AUTH
+        context.verify_mode = ssl.CERT_REQUIRED
+        context.check_hostname = True
+        context.load_default_certs()
+        connection = socket.create_connection((self.host, port))
+        _kwargs = {"server_hostname": self.host}
+        client = context.wrap_socket(connection, **_kwargs)
+        return client
 
     @staticmethod
     def Receive(client, len_=4095) -> bytes:
