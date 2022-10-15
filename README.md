@@ -192,6 +192,12 @@ func main() {
 
 ------------------------------------------------
 
+**参考**
+
+[test/http2-test.py](https://python-hyper.org/projects/h2/en/stable/plain-sockets-example.html)
+
+------------------------------------------------
+
 **总结：**
 
 **python-sokcet-buy 2022/09/08-now **
