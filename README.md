@@ -194,9 +194,9 @@ func main() {
 
 **总结：**
 
-**python-sokcet-buy 2022/09/08-2022/10/09 RIP**
+**python-sokcet-buy 2022/09/08-now **
 
-**python-requests-buy 2022/01/13-2022/10/09 RIP**
+**python-requests-buy 2022/01/13-now **
 
 你先百度百度http1.x到http2都是基于什么的再说哪个脚本快啥的，这根本就不是一个类型
 
