@@ -145,7 +145,7 @@ class SuitValue(Tools):
             ("content-type", "application/x-www-form-urlencoded; charset=utf-8"),
             ("content-length", str(len(form_data))),
             ("accept-encoding", headers["accept-encoding"]),
-            ("cookie", "SESSDATA=ca600fe1%2C1681451106%2C94d911a1; bili_jct=202fb88a93b633cedf1b3b6957bdacaa"),
+            ("cookie", headers["cookie"]),
         ]
 
         print(__headers)
