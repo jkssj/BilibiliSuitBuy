@@ -84,7 +84,8 @@ class Tools(object):
         h3 = [[ii.decode() for ii in i] for i in h2]
         headers = {unquote(i[0]): i[1] for i in h3}
 
-        cookies_content: str = headers.get("Cookie")
+        __key = "Cookie" if "Cookie" in headers else "cookie"
+        cookies_content: str = headers.get(__key)
         c1: list = cookies_content.split("; ")
         c2 = [i.split("=") for i in c1]
         cookies = {i[0]: i[1] for i in c2}
@@ -127,7 +128,7 @@ class SuitValue(Tools):
         message += f"x-bili-trace-id: {self.BiliTraceId(sale_time)}\r\n"
         message += f"x-bili-aurora-eid: {headers['x-bili-aurora-eid']}\r\n"
         message += f"x-bili-mid: {headers['x-bili-mid']}\r\n"
-        message += f"x-bili-aurora-zone: {headers['x-bili-aurora-zone']}\r\n"
+        message += f"x-bili-aurora-zone: {headers['x-bili-aurora-zone:']}\r\n"
         message += f"Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n"
         message += f"Content-Length: {str(len(form_data))}\r\n"
         message += f"Host: {self.host}\r\n"
@@ -186,7 +187,7 @@ def main():
     sale_time = 1665889008
 
     suit_buy = SuitBuy(
-        http_message=open(r"http1.1-message.txt", "rb").read(),
+        http_message=open(r"../http-message/HTTP1.1Message.txt", "rb").read(),
         sale_time=sale_time,
 
         # 可选
@@ -199,19 +200,21 @@ def main():
     )
 
     # 演示
-    # response, run_time = suit_buy.demo()
-    # print(response, run_time)
+    response, run_time = suit_buy.demo()
+    print(response, run_time)
 
     # 跳出本地计时器后
-    client = suit_buy.CreateTlsConnection()
-    suit_buy.SendMessageHeader(client)
+    # client = suit_buy.CreateTlsConnection()
+    # suit_buy.SendMessageHeader(client)
 
     # 等待服务器计时退出
-    suit_buy.SendMessageBody(client)
-    response = suit_buy.ReceiveResponse(client)
+    # suit_buy.SendMessageBody(client)
+    # response = suit_buy.ReceiveResponse(client)
 
-    print(response.decode())
-    client.close()
+    # print(response.decode())
+    
+    # 关闭连接
+    # client.close()
 
 
 if __name__ == '__main__':
