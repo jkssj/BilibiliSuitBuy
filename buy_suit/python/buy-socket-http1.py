@@ -5,7 +5,6 @@
 from urllib.parse import urlencode
 from urllib.parse import urlsplit
 from urllib.parse import unquote
-from typing import Union
 import hashlib
 import socket
 import uuid
@@ -18,7 +17,7 @@ class Tools(object):
         super(Tools, self).__init__()
 
     @staticmethod
-    def BiliTraceId(_time: Union[int, float, str] = None):
+    def BiliTraceId(_time: int | float | str = None):
         _time = float(_time) if _time else time.time()
         back6 = hex(round(_time / 256))
         front = str(uuid.uuid4()).replace("-", "")
@@ -159,13 +158,8 @@ class SuitBuy(SuitValue):
         return client.send(self.message_body)
 
     @staticmethod
-    def ReceiveResponse(client: ssl.SSLSocket, length=1024) -> bytes:
-        data = client.recv(length)
-        response = bytes()
-        while data:
-            response += data
-            data = client.recv(length)
-        return response
+    def ReceiveResponse(client: ssl.SSLSocket, length=4096) -> bytes:
+        return client.recv(length)
 
     def demo(self, port=443, **kwargs):
         # 创建连接
@@ -184,6 +178,7 @@ class SuitBuy(SuitValue):
 
         print(response.decode())
         print(e - s)
+        client.close()
         return response, e - s
 
 
@@ -216,6 +211,7 @@ def main():
     response = suit_buy.ReceiveResponse(client)
 
     print(response.decode())
+    client.close()
 
 
 if __name__ == '__main__':
