@@ -117,9 +117,8 @@ class SuitValue(Tools):
 
         self.h2connection = self.BuildH2(sale_time, headers, form_data)
 
+        # h2报文
         __message = self.h2connection.data_to_send()
-        self.message = __message
-
         self.message_header = __message[:-1]
         self.message_body = __message[-1:]
 
@@ -147,8 +146,6 @@ class SuitValue(Tools):
             ("accept-encoding", headers["accept-encoding"]),
             ("cookie", headers["cookie"]),
         ]
-
-        print(__headers)
 
         h2connection.send_headers(1, __headers)
         h2connection.send_data(1, form_data.encode(), end_stream=True)
@@ -178,51 +175,53 @@ class SuitBuy(SuitValue):
     def SendMessageBody(self, client: ssl.SSLSocket):
         return client.send(self.message_body)
 
-    @staticmethod
-    def ReceiveResponse(client: ssl.SSLSocket, length=4096) -> bytes:
-        return client.recv(length)
+    def ReceiveResponse(self, client: ssl.SSLSocket, length=4096) -> bytes:
+        """ 接收响应 """
+        response = bytes()
+        recv_data = client.recv(length)
+        while recv_data:
+            events = self.h2connection.receive_data(recv_data)
+            for event in events:
+                if isinstance(event, h2.events.DataReceived):
+                    args = (event.flow_controlled_length, event.stream_id)
+                    self.h2connection.acknowledge_received_data(*args)
+                    response += event.data
+                if isinstance(event, h2.events.StreamEnded):
+                    client.sendall(self.h2connection.data_to_send())
+                    return response
+
+            client.sendall(self.h2connection.data_to_send())
+            recv_data = client.recv(length)
+
+        return response
+
+    def ClientClose(self, client: ssl.SSLSocket) -> None:
+        self.h2connection.close_connection()
+        client.sendall(self.h2connection.data_to_send())
+        client.close()
 
     def demo(self, port=443, **kwargs):
         client = self.CreateTlsConnection(port, **kwargs)
 
-        client.sendall(self.message)
+        s = time.time()
 
-        response = bytes()
+        self.SendMessageHeader(client)
+        self.SendMessageBody(client)
 
-        response_stream_ended = False
-        while not response_stream_ended:
-            data = client.recv(65536 * 1024)
-            if not data:
-                break
+        response = self.ReceiveResponse(client)
 
-            events = self.h2connection.receive_data(data)
-            for event in events:
-                if isinstance(event, h2.events.DataReceived):
-                    # update flow control so the server doesn't starve us
-                    self.h2connection.acknowledge_received_data(event.flow_controlled_length, event.stream_id)
-                    # more response body data received
-                    response += event.data
-                if isinstance(event, h2.events.StreamEnded):
-                    # response body completed, let's exit the loop
-                    response_stream_ended = True
-                    break
-            client.sendall(self.h2connection.data_to_send())
+        e = time.time()
 
-        print("Response fully received:")
-        print(response.decode())
+        self.ClientClose(client)
 
-        self.h2connection.close_connection()
-        client.sendall(self.h2connection.data_to_send())
-
-        # close the socket
-        client.close()
+        return response.decode(errors="ignore"), e - s
 
 
-if __name__ == '__main__':
+def main():
     sale_time = 1665901776
 
     suit_buy = SuitBuy(
-        http_message=open(r"HTTP2.0Message.txt", "rb").read(),
+        http_message=open(r"../http-message/HTTP2.0Message.txt", "rb").read(),
         sale_time=sale_time,
 
         # 可选
@@ -230,12 +229,27 @@ if __name__ == '__main__':
         buy_num="1",
         coupon_token="",
         host="api.bilibili.com",
-        # host="httpbin.org",
         f_source="shop",
         shop_from="feed.card",
     )
 
-    # print(suit_buy.message_body)
-
     # 演示
-    suit_buy.demo()
+    response, run_time = suit_buy.demo()
+    print(response, run_time)
+
+    # 跳出本地计时器后
+    # client = suit_buy.CreateTlsConnection()
+    # suit_buy.SendMessageHeader(client)
+
+    # 等待服务器计时退出
+    # suit_buy.SendMessageBody(client)
+    # response = suit_buy.ReceiveResponse(client)
+
+    # print(response.decode())
+    
+    # 关闭连接
+    # suit_buy.ClientClose(client)
+
+
+if __name__ == '__main__':
+    main()
