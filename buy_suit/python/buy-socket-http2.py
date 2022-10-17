@@ -84,12 +84,11 @@ class Tools(object):
 
         headers_content = message_content[1:len(message_content) - 2]
         h = [i.split(b": ") for i in headers_content]
-        _h2 = [i if len(i) == 2 else [i[0], b""] for i in h]
-        h3 = [[ii.decode() for ii in i] for i in _h2]
-        headers = {unquote(i[0]): i[1] for i in h3}
+        h2 = [i if len(i) == 2 else [i[0], b""] for i in h]
+        h3 = [[ii.decode() for ii in i] for i in h2]
+        headers = {unquote(i[0]).lower(): i[1] for i in h3}
 
-        __key = "Cookie" if "Cookie" in headers else "cookie"
-        cookies_content: str = headers.get(__key)
+        cookies_content: str = headers.get("cookie")
         c1: list = cookies_content.split("; ")
         c2 = [i.split("=") for i in c1]
         cookies = {i[0]: i[1] for i in c2}
@@ -140,7 +139,7 @@ class SuitValue(Tools):
             ("x-bili-trace-id", self.BiliTraceId(sale_time)),
             ("x-bili-aurora-eid", headers["x-bili-aurora-eid"]),
             ("x-bili-mid", headers["x-bili-mid"]),
-            ("x-bili-aurora-zone", headers["x-bili-aurora-zone:"]),
+            ("x-bili-aurora-zone", headers["x-bili-aurora-zone"]),
             ("content-type", "application/x-www-form-urlencoded; charset=utf-8"),
             ("content-length", str(len(form_data))),
             ("accept-encoding", headers["accept-encoding"]),
@@ -246,7 +245,7 @@ def main():
     # response = suit_buy.ReceiveResponse(client)
 
     # print(response.decode())
-    
+
     # 关闭连接
     # suit_buy.ClientClose(client)
 
