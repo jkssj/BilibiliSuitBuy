@@ -176,8 +176,6 @@ class SuitBuy(SuitValue):
 
         e = time.time()
 
-        print(response.decode())
-        print(e - s)
         client.close()
         return response, e - s
 
