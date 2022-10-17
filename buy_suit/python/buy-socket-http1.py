@@ -82,10 +82,9 @@ class Tools(object):
         h = [i.split(b": ") for i in headers_content]
         h2 = [i if len(i) == 2 else [i[0], b""] for i in h]
         h3 = [[ii.decode() for ii in i] for i in h2]
-        headers = {unquote(i[0]): i[1] for i in h3}
+        headers = {unquote(i[0]).lower(): i[1] for i in h3}
 
-        __key = "Cookie" if "Cookie" in headers else "cookie"
-        cookies_content: str = headers.get(__key)
+        cookies_content: str = headers.get("cookie")
         c1: list = cookies_content.split("; ")
         c2 = [i.split("=") for i in c1]
         cookies = {i[0]: i[1] for i in c2}
@@ -119,21 +118,21 @@ class SuitValue(Tools):
     def BuildMessage(self, sale_time: int, headers: dict, form_data: str):
         message = "POST /x/garb/v2/trade/create HTTP/1.1\r\n"
         message += f"native_api_from: {headers['native_api_from']}\r\n"
-        message += f"Cookie: {headers['Cookie']}\r\n"
-        message += f"Accept: {headers['Accept']}\r\n"
-        message += f"Referer: {headers['Referer']}\r\n"
+        message += f"Cookie: {headers['cookie']}\r\n"
+        message += f"Accept: {headers['accept']}\r\n"
+        message += f"Referer: {headers['referer']}\r\n"
         message += f"env: {headers['env']}\r\n"
-        message += f"APP-KEY: {headers['APP-KEY']}\r\n"
-        message += f"User-Agent: {headers['User-Agent']}\r\n"
+        message += f"APP-KEY: {headers['app-key']}\r\n"
+        message += f"User-Agent: {headers['user-agent']}\r\n"
         message += f"x-bili-trace-id: {self.BiliTraceId(sale_time)}\r\n"
         message += f"x-bili-aurora-eid: {headers['x-bili-aurora-eid']}\r\n"
         message += f"x-bili-mid: {headers['x-bili-mid']}\r\n"
-        message += f"x-bili-aurora-zone: {headers['x-bili-aurora-zone:']}\r\n"
+        message += f"x-bili-aurora-zone: {headers['x-bili-aurora-zone']}\r\n"
         message += f"Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n"
         message += f"Content-Length: {str(len(form_data))}\r\n"
         message += f"Host: {self.host}\r\n"
-        message += f"Connection: {headers['Connection']}\r\n"
-        message += f"Accept-Encoding: {headers['Accept-Encoding']}\r\n\r\n"
+        message += f"Connection: {headers['connection']}\r\n"
+        message += f"Accept-Encoding: {headers['accept-encoding']}\r\n\r\n"
         return str(message + form_data).encode()
 
 
@@ -212,7 +211,7 @@ def main():
     # response = suit_buy.ReceiveResponse(client)
 
     # print(response.decode())
-    
+
     # 关闭连接
     # client.close()
 
