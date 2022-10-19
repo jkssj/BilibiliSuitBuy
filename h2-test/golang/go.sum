@@ -1,0 +1,4 @@
+golang.org/x/net v0.0.0-20221019024206-cb67ada4b0ad h1:Zx6wVVDwwNJFWXNIvDi7o952w3/1ckSwYk/7eykRmjM=
+golang.org/x/net v0.0.0-20221019024206-cb67ada4b0ad/go.mod h1:RpDiru2p0u2F0lLpEoqnP2+7xs0ifAuOcJ442g6GU2s=
+golang.org/x/text v0.4.0 h1:BrVqGRd7+k1DiOgtnFvAkoQEWQvBc25ouMJM6429SFg=
+golang.org/x/text v0.4.0/go.mod h1:mrYo+phRRbMaCq/xk9113O4dZlRixOauAjOtrjsXDZ8=
