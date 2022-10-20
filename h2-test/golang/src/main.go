@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
-	"golang.org/x/net/http2/hpack"
 	"golang/src/PH2"
 )
 
@@ -13,7 +12,7 @@ func main() {
 		NextProtos: []string{"h2"},
 	}
 
-	var con, _ = tls.Dial("tcp", "api.bilibili.com:443", TlsConfig)
+	var con, _ = tls.Dial("tcp", "httpbin.org:443", TlsConfig)
 
 	var th2 = new(PH2.H2Connection)
 
@@ -22,15 +21,28 @@ func main() {
 	var SettingsData = th2.DataToSend()
 	_, _ = con.Write(SettingsData)
 
-	var headers = []hpack.HeaderField{
-		{Name: ":method", Value: "GET"},
-		{Name: ":path", Value: "/x/space/acc/info?mid=1701735549"},
-		{Name: ":authority", Value: "api.bilibili.com"},
-		{Name: ":scheme", Value: "https"},
-		{Name: "user-agent", Value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"},
-	}
+	// POST
+	//var headers = []hpack.HeaderField{
+	//	{Name: ":method", Value: "POST"},
+	//	{Name: ":path", Value: "/post"},
+	//	{Name: ":authority", Value: "httpbin.org"},
+	//	{Name: ":scheme", Value: "https"},
+	//	{Name: "user-agent", Value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"},
+	//}
+	//
+	//th2.SendHeaders(1, headers, 4)
+	//th2.SendData(1, []byte("next"), 1)
 
-	th2.SendHeaders(1, headers, 5)
+	// GET
+	//var headers = []hpack.HeaderField{
+	//	{Name: ":method", Value: "GET"},
+	//	{Name: ":path", Value: "/get"},
+	//	{Name: ":authority", Value: "httpbin.org"},
+	//	{Name: ":scheme", Value: "https"},
+	//	{Name: "user-agent", Value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"},
+	//}
+	//th2.SendHeaders(1, headers, 5)
+
 	var HeadersData = th2.DataToSend()
 	_, _ = con.Write(HeadersData)
 
@@ -41,6 +53,9 @@ func main() {
 
 		var events = th2.ReceiveData(buf[:length])
 		for _, event := range events {
+			
+			//fmt.Printf("%v\n", event)
+			
 			if value, ok := event.(*PH2.DataFrame); ok == true {
 				fmt.Printf("%v\n", value.Flags)
 				if value.Flags == 1 {
