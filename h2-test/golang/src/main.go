@@ -5,28 +5,22 @@ import (
 	"crypto/tls"
 	"fmt"
 	"golang.org/x/net/http2/hpack"
-	"golang/src/TH2"
+	"golang/src/PH2"
 )
 
 func main() {
-
 	var TlsConfig *tls.Config = &tls.Config{
 		NextProtos: []string{"h2"},
 	}
 
 	var con, _ = tls.Dial("tcp", "api.bilibili.com:443", TlsConfig)
 
-	var th2 = new(TH2.H2Connection)
+	var th2 = new(PH2.H2Connection)
 
 	th2.InitiateConnection()
-	//var InitData = th2.DataToSend()
-	//_, _ = con.Write(InitData)
-	//fmt.Printf("%v\n", InitData)
-
-	th2.SendSettings(nil)
+	th2.SendSettings(0, nil, 0)
 	var SettingsData = th2.DataToSend()
 	_, _ = con.Write(SettingsData)
-	//fmt.Printf("%v\n", SettingsData)
 
 	var headers = []hpack.HeaderField{
 		{Name: ":method", Value: "GET"},
@@ -41,22 +35,22 @@ func main() {
 	_, _ = con.Write(HeadersData)
 
 	var data []byte
-
 	for {
 		var buf = make([]byte, 8196)
 		var length, _ = con.Read(buf)
-		fmt.Printf("%v\n", len(buf[:length]))
 
 		var events = th2.ReceiveData(buf[:length])
 		for _, event := range events {
-			if value, ok := event.(*TH2.DataFrame); ok == true {
-				//fmt.Printf("%v\n", len(value.Body))
-				fmt.Printf("%v\n", "data")
+			if value, ok := event.(*PH2.DataFrame); ok == true {
+				fmt.Printf("%v\n", value.Flags)
+				if value.Flags == 1 {
+					goto EXIT
+				}
 				data = bytes.Join([][]byte{data, value.Body}, []byte(""))
-				goto EXIT
 			}
 		}
 	}
 EXIT:
 	fmt.Printf("%v\n", string(data))
+
 }
