@@ -74,7 +74,7 @@ func (receiver *H2Connection) SendSettings(setting *SettingsFrame) {
 func (receiver *H2Connection) ReceiveData(body []byte) []interface{} {
 	var events []interface{}
 	for len(body) > 0 {
-		var header = TypeBinary.UnPack("HBBBL", body[:9])
+		var header = TypeBinary.UnPack("BHBBL", body[:9])
 		var bodyLength = header[1]
 		var FrameType = header[2]
 		var Flags = header[3]
