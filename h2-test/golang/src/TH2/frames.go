@@ -2,84 +2,47 @@ package TH2
 
 import (
 	"bytes"
-	"golang.org/x/net/http2/hpack"
+	"hh2/src/TypeBinary"
 )
 
-type DataFrames struct {
-	StreamId  int
-	EndStream bool
+type Frame struct {
+	FrameType  int64
+	StreamId   int64
+	BodyLength int64
+	Flags      int64
+	EndStream  bool
 }
 
-func (receiver *DataFrames) buildDataFrames(body []byte) []byte {
-	var bodyLength = len(body)
-	var flag = 0
-	if receiver.EndStream {
-		flag += 1
-	}
-	var header = StructPack("HBBBL", []int{
-		(bodyLength >> 8) & 0xFFFF,
-		bodyLength & 0xFF, 0, flag,
-		receiver.StreamId & 0x7FFFFFFF,
-	})
-	return bytes.Join([][]byte{header, body}, []byte(""))
+func (receiver *Frame) DeHeader(body []byte) *Frame {
+	var data = TypeBinary.UnPack("HBBBL", body)
+	receiver.BodyLength = data[1]
+	receiver.FrameType = data[2]
+	receiver.Flags = data[3]
+	receiver.StreamId = data[4]
+	return receiver
 }
 
-func NewDataFrames(StreamId int, EndStream bool) *DataFrames {
-	var data = new(DataFrames)
-	data.StreamId = StreamId
-	data.EndStream = EndStream
-	return data
+func (receiver *Frame) EnHeader(body []byte) []byte {
+	receiver.BodyLength = int64(len(body))
+	var H1 = int((receiver.BodyLength >> 8) & 0xFFFF)
+	var B1 = int(receiver.BodyLength & 0xFF)
+	var B2 = int(receiver.FrameType)
+	var B3 = int(receiver.Flags)
+	var L1 = int(receiver.StreamId & 0x7FFFFFFF)
+	var values = []int{H1, B1, B2, B3, L1}
+	return TypeBinary.Pack("HBBBL", values)
 }
 
-func BuildDataFrames(dataFrames *DataFrames, data []byte) []byte {
-	return dataFrames.buildDataFrames(data)
-}
+type DataFrame struct{ Frame }
 
-// ------------------------------------------------------------------------------------------------
+type HeadersFrame struct{ Frame }
 
-type HeadersFrames struct {
-	StreamId  int
-	EndStream bool
-}
+type PriorityFrame struct{ Frame }
 
-func (receiver *HeadersFrames) buildHeaders(headers []hpack.HeaderField) []byte {
-	var buf bytes.Buffer
-	var EnHp = hpack.NewEncoder(&buf)
-	for _, value := range headers {
-		_ = EnHp.WriteField(value)
-	}
-	return buf.Bytes()
-}
+type RstStreamFrame struct{ Frame }
 
-func (receiver *HeadersFrames) buildHeadersFrames(headers []hpack.HeaderField) []byte {
-	var body = receiver.buildHeaders(headers)
-	var bodyLength = len(body)
-	var flag = 5
-	if !receiver.EndStream {
-		flag = 4
-	}
-	var header = StructPack("HBBBL", []int{
-		(bodyLength >> 8) & 0xFFFF,
-		bodyLength & 0xFF, 1, flag,
-		receiver.StreamId & 0x7FFFFFFF,
-	})
-	return bytes.Join([][]byte{header, body}, []byte(""))
-}
-
-func NewHeadersFrames(StreamId int, EndStream bool) *HeadersFrames {
-	var headers = new(HeadersFrames)
-	headers.StreamId = StreamId
-	headers.EndStream = EndStream
-	return headers
-}
-
-func BuildHeadersFrames(headersFrames *HeadersFrames, headers []hpack.HeaderField) []byte {
-	return headersFrames.buildHeadersFrames(headers)
-}
-
-// ------------------------------------------------------------------------------------------------
-
-type SettingsFrames struct {
+type SettingsFrame struct {
+	Frame
 	SettingsHeaderTableSize      int
 	SettingsEnablePush           int
 	SettingsMaxConcurrentStreams int
@@ -87,12 +50,12 @@ type SettingsFrames struct {
 	SettingsMaxFrameSize         int
 	SettingsMaxHeaderListSize    int
 	SettingsMaxClosedStreams     int
-	StreamId                     int
 }
 
-func (receiver *SettingsFrames) buildSettings() []byte {
+// ---------------------------------------------------------------------------------------------
+
+func (receiver *SettingsFrame) BuildBody() []byte {
 	var settings = make([][]int, 7)
-	var body = make([][]byte, 7)
 	settings[0] = []int{1, receiver.SettingsHeaderTableSize}
 	settings[1] = []int{2, receiver.SettingsEnablePush}
 	settings[2] = []int{4, receiver.SettingsInitialWindowSize}
@@ -100,56 +63,93 @@ func (receiver *SettingsFrames) buildSettings() []byte {
 	settings[4] = []int{8, receiver.SettingsMaxClosedStreams}
 	settings[5] = []int{3, receiver.SettingsMaxConcurrentStreams}
 	settings[6] = []int{6, receiver.SettingsMaxHeaderListSize}
+	var bodyList = make([][]byte, 7)
 	for i, setting := range settings {
-		body[i] = StructPack("HL", setting)
+		bodyList[i] = TypeBinary.Pack("HL", setting)
 	}
-	return bytes.Join(body, []byte(""))
+	return bytes.Join(bodyList, []byte(""))
 }
 
-func (receiver *SettingsFrames) buildSettingsFrames() []byte {
-	var body = receiver.buildSettings()
-	var bodyLength = len(body)
-	var header = StructPack("HBBBL", []int{
-		(bodyLength >> 8) & 0xFFFF,
-		bodyLength & 0xFF, 4, 0,
-		receiver.StreamId & 0x7FFFFFFF,
-	})
-	return bytes.Join([][]byte{header, body}, []byte(""))
+// ---------------------------------------------------------------------------------------------
+
+type PushPromiseFrame struct{ *Frame }
+
+type PingFrame struct{ *Frame }
+
+type GoawayFrame struct{ *Frame }
+
+type WindowUpdateFrame struct{ *Frame }
+
+type ContinuationFrame struct{ *Frame }
+
+// ---------------------------------------------------------------------------------------------
+
+func NewDataFrame(StreamId int64) *DataFrame {
+	var NewFrame = new(DataFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 0
+	return NewFrame
 }
 
-func NewSettingsFrames() *SettingsFrames {
-	var settings = new(SettingsFrames)
-	settings.SettingsHeaderTableSize = 4096
-	settings.SettingsEnablePush = 1
-	settings.SettingsMaxConcurrentStreams = 100
-	settings.SettingsInitialWindowSize = 65535
-	settings.SettingsMaxFrameSize = 16384
-	settings.SettingsMaxHeaderListSize = 65536
-	settings.SettingsMaxClosedStreams = 0
-	settings.StreamId = 0
-	return settings
+func NewHeadersFrame(StreamId int64) *HeadersFrame {
+	var NewFrame = new(HeadersFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 1
+	return NewFrame
 }
 
-func BuildSettingsFrames(settingsFrames *SettingsFrames) []byte {
-	return settingsFrames.buildSettingsFrames()
+func NewPriorityFrame(StreamId int64) *PriorityFrame {
+	var NewFrame = new(PriorityFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 2
+	return NewFrame
 }
 
-// ------------------------------------------------------------------------------------------------
-
-type UnFrames struct {
-	StreamId   int64
-	FrameType  int64
-	bodyLength int64
-	body       []byte
+func NewRstStreamFrame(StreamId int64) *RstStreamFrame {
+	var NewFrame = new(RstStreamFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 3
+	return NewFrame
 }
 
-func (receiver *UnFrames) Unpack(body []byte) []byte {
-	var header = StructUnPack("HBBBL", body[:9])
-	receiver.bodyLength = header[1]
-	receiver.FrameType = header[2]
-	receiver.StreamId = header[4]
-	//fmt.Printf("%v\n", receiver.bodyLength)
-	//return receiver.bodyLength
-	receiver.body = body[9 : receiver.bodyLength+9]
-	return body[receiver.bodyLength+9:]
+func NewSettingsFrame(StreamId int64) *SettingsFrame {
+	var NewFrame = new(SettingsFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 4
+	return NewFrame
+}
+
+func NewPushPromiseFrame(StreamId int64) *PushPromiseFrame {
+	var NewFrame = new(PushPromiseFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 5
+	return NewFrame
+}
+
+func NewPingFrame(StreamId int64) *PingFrame {
+	var NewFrame = new(PingFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 6
+	return NewFrame
+}
+
+func NewGoawayFrame(StreamId int64) *GoawayFrame {
+	var NewFrame = new(GoawayFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 7
+	return NewFrame
+}
+
+func NewWindowUpdateFrame(StreamId int64) *WindowUpdateFrame {
+	var NewFrame = new(WindowUpdateFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 8
+	return NewFrame
+}
+
+func NewContinuationFrame(StreamId int64) *ContinuationFrame {
+	var NewFrame = new(ContinuationFrame)
+	NewFrame.StreamId = StreamId
+	NewFrame.FrameType = 9
+	return NewFrame
 }
