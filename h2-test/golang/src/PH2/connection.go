@@ -3,7 +3,7 @@ package PH2
 import (
 	"bytes"
 	"golang.org/x/net/http2/hpack"
-	"golang/src/IntBinary"
+	"golang/src/PH2/IntBinary"
 )
 
 type HEADERS []hpack.HeaderField
