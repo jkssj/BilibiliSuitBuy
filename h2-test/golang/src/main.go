@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"fmt"
+	"golang.org/x/net/http2/hpack"
 	"golang/src/PH2"
 )
 
@@ -21,19 +22,18 @@ func main() {
 	var SettingsData = th2.DataToSend()
 	_, _ = con.Write(SettingsData)
 
-	// POST
-	//var headers = []hpack.HeaderField{
-	//	{Name: ":method", Value: "POST"},
-	//	{Name: ":path", Value: "/post"},
-	//	{Name: ":authority", Value: "httpbin.org"},
-	//	{Name: ":scheme", Value: "https"},
-	//	{Name: "user-agent", Value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"},
-	//}
-	//
-	//th2.SendHeaders(1, headers, 4)
-	//th2.SendData(1, []byte("next"), 1)
+	//POST
+	var headers = []hpack.HeaderField{
+		{Name: ":method", Value: "POST"},
+		{Name: ":path", Value: "/post"},
+		{Name: ":authority", Value: "httpbin.org"},
+		{Name: ":scheme", Value: "https"},
+		{Name: "user-agent", Value: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:105.0) Gecko/20100101 Firefox/105.0"},
+	}
+	th2.SendHeaders(1, headers, 4)
+	th2.SendData(1, []byte("next"), 1)
 
-	// GET
+	//GET
 	//var headers = []hpack.HeaderField{
 	//	{Name: ":method", Value: "GET"},
 	//	{Name: ":path", Value: "/get"},
@@ -53,19 +53,20 @@ func main() {
 
 		var events = th2.ReceiveData(buf[:length])
 		for _, event := range events {
-			
-			//fmt.Printf("%v\n", event)
-			
+			if value, ok := event.(*PH2.HeadersFrame); ok == true {
+				fmt.Printf("%v\n", value.Headers)
+			}
 			if value, ok := event.(*PH2.DataFrame); ok == true {
-				fmt.Printf("%v\n", value.Flags)
-				if value.Flags == 1 {
-					goto EXIT
-				}
 				data = bytes.Join([][]byte{data, value.Body}, []byte(""))
+			}
+			if _, ok := event.(*PH2.EndStream); ok == true {
+				goto EXIT
 			}
 		}
 	}
 EXIT:
 	fmt.Printf("%v\n", string(data))
-
+	th2.CloseConnection(1, 0, 0)
+	_, _ = con.Write(th2.DataToSend())
+	_ = con.Close()
 }

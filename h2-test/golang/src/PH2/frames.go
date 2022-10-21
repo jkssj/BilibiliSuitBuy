@@ -32,6 +32,12 @@ func (receiver *Frame) buildHeader(body []byte) []byte {
 	return IntBinary.Pack("BHBBL", values)
 }
 
+// EndStream
+// 已经结束哩
+type EndStream struct {
+	Frame
+}
+
 // DataFrame
 // -> Data帧(0)
 // Body: 内容
@@ -110,7 +116,6 @@ func (receiver *SettingsFrame) getSettings() [][]int {
 		return [][]int{}
 	}
 	var settingList = make([][]int, 7)
-	var settings [][]int
 	settingList[0] = []int{1, receiver.SettingsHeaderTableSize}
 	settingList[1] = []int{2, receiver.SettingsEnablePush}
 	settingList[2] = []int{4, receiver.SettingsInitialWindowSize}
@@ -118,6 +123,8 @@ func (receiver *SettingsFrame) getSettings() [][]int {
 	settingList[4] = []int{8, receiver.SettingsMaxClosedStreams}
 	settingList[5] = []int{3, receiver.SettingsMaxConcurrentStreams}
 	settingList[6] = []int{6, receiver.SettingsMaxHeaderListSize}
+
+	var settings [][]int
 	for _, setting := range settingList {
 		if setting[1] < 0 {
 			settings = append(settings, setting)
@@ -142,6 +149,7 @@ type PingFrame struct {
 // -> Goaway帧(7)
 type GoawayFrame struct {
 	Frame
+	ErrorCode int
 }
 
 // WindowUpdateFrame
@@ -216,12 +224,32 @@ func NewSettingsFrame(StreamId int64, Flags int64) *SettingsFrame {
 	return frame
 }
 
+// NewGoawayFrame
+// 创建一个包含 Flags,StreamId 的空Goaway帧
+func NewGoawayFrame(StreamId int64, Flags int64) *GoawayFrame {
+	var frame = new(GoawayFrame)
+	frame.StreamId = StreamId
+	frame.FrameType = 7
+	frame.Flags = Flags
+	return frame
+}
+
 // NewWindowUpdateFrame
-// 创建一个包含 Flags,StreamId 的空NewWindowUpdate帧
+// 创建一个包含 Flags,StreamId 的空WindowUpdate帧
 func NewWindowUpdateFrame(StreamId int64, Flags int64) *WindowUpdateFrame {
 	var frame = new(WindowUpdateFrame)
 	frame.StreamId = StreamId
 	frame.FrameType = 8
+	frame.Flags = Flags
+	return frame
+}
+
+// NewEndStream
+// 已经结束哩
+func NewEndStream(StreamId int64, Flags int64) *EndStream {
+	var frame = new(EndStream)
+	frame.StreamId = StreamId
+	frame.FrameType = -1
 	frame.Flags = Flags
 	return frame
 }

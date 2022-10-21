@@ -76,6 +76,14 @@ func (receiver *H2Connection) SendSettings(StreamId int64, setting *SettingsFram
 	receiver.addDataToSend(bytes.Join(s, []byte("")))
 }
 
+func (receiver *H2Connection) CloseConnection(StreamId int64, code int, Flags int64) {
+	var frame = NewGoawayFrame(StreamId, Flags)
+	frame.ErrorCode = code
+	var data = IntBinary.Pack("L", []int{code})
+	var s = [][]byte{frame.buildHeader(data), data}
+	receiver.addDataToSend(bytes.Join(s, []byte("")))
+}
+
 func (receiver *H2Connection) ReceiveData(ReceiveBody []byte) []interface{} {
 	var events []interface{}
 	for len(ReceiveBody) > 0 {
@@ -94,6 +102,9 @@ func (receiver *H2Connection) ReceiveData(ReceiveBody []byte) []interface{} {
 			frame.Length = bodyLength
 			events = append(events, frame)
 			ReceiveBody = ReceiveBody[bodyLength+9:]
+			if frame.Flags == 1 {
+				events = append(events, NewEndStream(StreamId, Flags))
+			}
 		case 1:
 			// headers帧
 			var frame = NewHeadersFrame(StreamId, Flags)
@@ -136,7 +147,7 @@ func (receiver *H2Connection) ReceiveData(ReceiveBody []byte) []interface{} {
 			events = append(events, frame)
 			ReceiveBody = ReceiveBody[bodyLength+9:]
 		default:
-			ReceiveBody = []byte("")
+			ReceiveBody = ReceiveBody[bodyLength+9:]
 		}
 	}
 	return events
