@@ -2,7 +2,7 @@ package PH2
 
 import (
 	"golang.org/x/net/http2/hpack"
-	"golang/src/IntBinary"
+	"golang/src/PH2/IntBinary"
 )
 
 // Frame
