@@ -87,7 +87,6 @@ func parseHttpMessage(content []byte) (map[string]string, map[string]string) {
 			ValueList = []string{ValueList[0], ""}
 		}
 		var key = strings.ToLower(ValueList[0])
-		fmt.Printf("%v--%v\n", key, ValueList[1])
 		MessageMap[key] = ValueList[1]
 	}
 
@@ -169,7 +168,7 @@ func BuildAll(filePath string, config *Config) ([]byte, []byte) {
 // 创建连接
 func CreateTlsConnection(config *Config) *tls.Conn {
 	var TlsConfig *tls.Config = &tls.Config{
-		InsecureSkipVerify: true,
+		InsecureSkipVerify: false,
 		ServerName:         config.host,
 		MinVersion:         tls.VersionTLS12,
 		MaxVersion:         tls.VersionTLS12,
