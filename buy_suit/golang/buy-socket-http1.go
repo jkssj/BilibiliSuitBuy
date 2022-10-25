@@ -231,4 +231,6 @@ func main() {
 
 	fmt.Printf("%v\n", string(response))
 	fmt.Printf("耗时:%vs\n", e-s)
+	_ = client.Close()
+	
 }
