@@ -142,48 +142,44 @@ if __name__ == '__main__':
 
 ------------------------------------------------
 
-<font size=4>**运行 buy-socket.go ：**</font>
+<font size=4>**运行 buy-socket-http1.go ：**</font>
 
 ```
 func main() {
-	var FilePath string = "./buy_suit/http-message/HTTP1.1Message.txt" // 报文文件路径
-	var SaleTime = time.Now().Unix()                                   // 装扮开售时间
+	// Config都是必要
+	// 一般只要改saleTim就行
+	var saleTime = 1666427455
+	var filePath = "./buy_suit/http-message/HTTP1.1Message.txt"
+	var config = new(Config)
+	(*config).saleTime = int64(saleTime)
+	(*config).host = "api.bilibili.com"
+	(*config).shopFrom = "feed.card"
+	(*config).fSource = "shop"
+	(*config).buyNum = 1
+	(*config).addMonth = -1
+	(*config).couponToken = ""
 
-	var config *Config = &DefaultConfig
-	(*config).Host = "api.bilibili.com"
-	(*config).ShopFrom = "feed.card"
-	(*config).FSource = "shop"
-	(*config).BuyNum = 1
-	(*config).AddMonth = -1
-	(*config).CouponToken = ""
-
-	var SuitBuyC *SuitBuy = new(SuitBuy).init(FilePath, SaleTime, config)
+	var header, body = BuildAll(filePath, config)
+	//fmt.Printf("%v\n", string(header))
+	//fmt.Printf("%v\n", string(body))
 
 	// 跳出本地计时器
+	var client = CreateTlsConnection(config)
 
-	SuitBuyC.LinkSever()  // 连接到服务器
-	SuitBuyC.SendHeader() // 发送n-1的头数据
+	var s = time.Now().UnixNano() / 1e6
+
+	SendMessage(client, header) // 发送n-1的内容
 
 	// 跳出服务器计时器
+	SendMessage(client, body)              // 发送剩余的内容
+	var response = ReceiveResponse(client) // 接收响应
 
-	SuitBuyC.SendBody() // 发出剩下的数据
+	var e = time.Now().UnixNano() / 1e6
 
-	// 打印响应
-	var Response string = SuitBuyC.ReceiveResponse()
-	fmt.Printf("%v", Response)
+	fmt.Printf("%v\n", string(response))
+	fmt.Printf("耗时:%vs\n", e-s)
 }
 ```
-
-| key                   | value       | default           |
-|-----------------------|-------------|-------------------|
-| FilePath              | fiddler报文路径 | None              |
-| SaleTime              | 购买/开售 时间    | time.Now().Unix() |
-| (*config).AddMonth    | 购买时长        | -1                |
-| (*config).BuyNum      | 购买数量        | 1                 |
-| (*config).Host        | 地址          | api.bilibili.com  |
-| (*config).FSource     | 购买源头        | shop              |
-| (*config).ShopFrom    | 进入源头        | feed.card         |
-| (*config).CouponToken | 优惠卷         | None              |
 
 ------------------------------------------------
 
