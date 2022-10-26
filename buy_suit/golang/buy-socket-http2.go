@@ -1,6 +1,3 @@
-// https://github.com/lllk140/gh2
-
-
 package main
 
 import (
@@ -157,7 +154,7 @@ func BuildH2Frames(config *Config, headers map[string]string, formData string) (
 		{Name: "accept-encoding", Value: headers["accept-encoding"]},
 		{Name: "cookie", Value: headers["cookie"]},
 	}
-	h2connection.SendHeaders(1, __headers, 5)
+	h2connection.SendHeaders(1, __headers, 4)
 	h2connection.SendData(1, []byte(formData), 1)
 	return h2connection.DataToSend(), h2connection
 }
@@ -205,24 +202,27 @@ func SendMessage(client *tls.Conn, body []byte) {
 func ReceiveResponse(client *tls.Conn, th2 *GH2.H2Connection) ([]byte, []hpack.HeaderField) {
 	var result []byte
 	var headers []hpack.HeaderField
-	for {
-		var data = make([]byte, 8196)
-		var length, _ = client.Read(data)
 
+	var data = make([]byte, 8196)
+	var length, _ = client.Read(data)
+
+	for len(data[:length]) > 0 {
 		var events = th2.ReceiveData(data[:length])
 		for _, event := range events {
 			if value, ok := event.(*GH2.HeadersFrame); ok == true {
 				headers = value.Headers
 			}
 			if value, ok := event.(*GH2.DataFrame); ok == true {
-				fmt.Printf("%v\n", string(value.Body))
 				result = bytes.Join([][]byte{result, value.Body}, []byte(""))
 			}
 			if _, ok := event.(*GH2.EndStream); ok == true {
 				return result, headers
 			}
 		}
+		data = make([]byte, 8196)
+		length, _ = client.Read(data)
 	}
+	return result, headers
 }
 
 func CloseClient(client *tls.Conn, th2 *GH2.H2Connection) {
