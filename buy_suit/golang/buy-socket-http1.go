@@ -144,7 +144,7 @@ func BuildMessage(config *Config, headers map[string]string, formData string) []
 	message += fmt.Sprintf("User-Agent: %v\r\n", headers["user-agent"])
 	message += fmt.Sprintf("x-bili-trace-id: %v\r\n", BiliTraceId((*config).saleTime))
 	message += fmt.Sprintf("x-bili-aurora-eid: %v\r\n", headers["x-bili-aurora-eid"])
-	message += fmt.Sprintf("x-bili-mi: %v\r\n", headers["x-bili-mid"])
+	message += fmt.Sprintf("x-bili-mid: %v\r\n", headers["x-bili-mid"])
 	message += fmt.Sprintf("x-bili-aurora-zone: %v\r\n", headers["x-bili-aurora-zone"])
 	message += "Content-Type: application/x-www-form-urlencoded; charset=utf-8\r\n"
 	message += fmt.Sprintf("Content-Length: %v\r\n", len(formData))
