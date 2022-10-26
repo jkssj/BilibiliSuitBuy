@@ -265,5 +265,5 @@ func main() {
 
 	fmt.Printf("%v\n", string(response))
 	fmt.Printf("%v\n", headers)
-	fmt.Printf("耗时:%vs\n", e-s)
+	fmt.Printf("耗时:%vms\n", e-s)
 }
