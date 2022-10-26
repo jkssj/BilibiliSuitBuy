@@ -251,10 +251,10 @@ func main() {
 	// 跳出本地计时器
 	var client = CreateTlsConnection(config)
 
-	var s = time.Now().UnixNano() / 1e6
-
 	SendMessage(client, header) // 发送n-1的内容
-
+	
+	var s = time.Now().UnixNano() / 1e6
+	
 	// 跳出服务器计时器
 	SendMessage(client, body)                            // 发送剩余的内容
 	var response, headers = ReceiveResponse(client, th2) // 接收响应
