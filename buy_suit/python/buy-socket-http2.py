@@ -201,12 +201,12 @@ class SuitBuy(SuitValue):
 
     def demo(self, port=443, **kwargs):
         client = self.CreateTlsConnection(port, **kwargs)
-
-        s = time.time()
-
+        
         self.SendMessageHeader(client)
+        
+        s = time.time()
+        
         self.SendMessageBody(client)
-
         response = self.ReceiveResponse(client)
 
         e = time.time()
