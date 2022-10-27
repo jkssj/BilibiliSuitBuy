@@ -201,6 +201,8 @@ func main() {
 
 <summary>V我😋</summary>
 
+公开的都还有人找定制，停更了
+
 <div align=center><img src="./reward.gif"></div>
 
 </details>
