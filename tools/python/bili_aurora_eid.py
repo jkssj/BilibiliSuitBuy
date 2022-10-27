@@ -47,16 +47,13 @@ def bili_aurora_eid_java(mid: str):
 
 def bili_aurora_eid_python(mid: str):
     length = mid.__len__()
-    barr = [int() for _ in range(length)]
+    barr = bytearray(length)
     if length - 1 < 0:
         return ""
     for i in range(length):
-        a = ord(mid[i])
-        b = ord("ad1va46a7lza"[i % 12])
-        barr[i] = a ^ b
-    base64_de = b"".join([chr(li).encode() for li in barr])
-    base64_en = base64.b64encode(base64_de)
-    return base64_en.decode()
+        s = ord("ad1va46a7lza"[i % 12])
+        barr[i] = ord(mid[i]) ^ s
+    return base64.b64encode(barr).decode()
 
 
 if __name__ == '__main__':
