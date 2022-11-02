@@ -1,0 +1,16 @@
+{
+  "main": {
+    "title": "生成配置",
+    "background": [240, 240, 240],
+    "height": 330,
+    "width": 850,
+    "resizable": false
+  },
+  "qrcode": {
+    "update_time": 2,
+    "title": "二维码登录-TV",
+    "resizable": false,
+    "width": 370,
+    "height": 370
+  }
+}
