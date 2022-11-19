@@ -64,7 +64,7 @@ func (receiver *BiliTimer) WaitLocalTime(jump int64) float64 {
 }
 
 func (receiver *BiliTimer) WaitSeverTime() float64 {
-	var SleepTimeNumber = receiver.DelayTime * float64(time.Second)
+	var SleepTimeNumber = (receiver.DelayTime / 1000) * float64(time.Second)
 	receiver.updateClient()
 	var NowTime = receiver.GetBiliTime()
 	for NowTime < receiver.SaleTime {
