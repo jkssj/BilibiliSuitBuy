@@ -8,9 +8,12 @@
 
 ------------------------------------------------
 
-**抓包教程：**
-
 [抓包教程](https://www.bilibili.com/video/BV1Re411g7f5/)
+
+锁定url为 ```/x/garb/v2/mall/suit/detail``` 的包, 选中后点击 ```Raw```
+
+```ctrl+a```全选```ctrl+c```复制, 然后创建一个文本文件```ctrl+v```粘贴进去 最后```ctrl+s```保存
+保存的文件就是http报文的文件, Fiddler Everywhere需要开启HTTP2才能抓HTTP2, Classic只有HTTP1.1
 
 ------------------------------------------------
 
